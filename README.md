@@ -3,21 +3,18 @@
 
 Official service matrices and game server configurations for NOVUS-OS.
 
-## Overview
-Repository with official JSON and YAML matrices used for game servers and service provisioning.
+## Repository Role
+Public source of official JSON and YAML matrix definitions for game and service provisioning.
 
-## Sync Model
-NOVUS-OS Panel imports matrices into novus_os and validates updates on a weekly schedule.
-Sync endpoint: /api/matrices/sync.
+## Delivery Model
+Matrices are versioned directly in this public repository.
+NOVUS-OS Panel imports them into novus_os and validates updates on a weekly schedule.
 
-## Versioning
-Each matrix change should be traceable by commit SHA and release tag when applicable.
+## Integration
+Primary sync endpoint in panel: /api/matrices/sync.
 
 ## Security
-Do not include secrets in matrix definitions.
-
-## Support
-For compatibility questions, use repository issues or operator channel.
+Never store credentials or secrets inside matrix files.
 
 ## License
 See LICENSE in this repository.
