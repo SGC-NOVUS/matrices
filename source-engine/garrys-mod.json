@@ -4,8 +4,8 @@
     "description": "Garry's Mod is a sandbox physics game created by Garry Newman.",
     "author": "SGC-NOVUS Tech",
     "icon_url": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4000/extras/6bc2f3d7419dbec4558deb9e0f6d6dc6.avif?t=1776868682",
-    "type": "game",
-    "slug": "gmod",
+    "type": "Game",
+    "slug": "GMOD",
     "run_image": "ghcr.io/sgc-novus/core-images:source",
     "install_image": "ghcr.io/sgc-novus/core-images:source",
     "startup_command": "./srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_GSLT}} +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' )",
@@ -139,7 +139,7 @@
         "ru": {
             "name": "Garry's Mod",
             "description": "Garry's Mod — это песочница с физикой, созданная Гарри Ньюменом.",
-            "type": "игра",
+            "type": "Игра",
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Карта",
@@ -182,7 +182,7 @@
         "uk": {
             "name": "Garry's Mod",
             "description": "Garry's Mod — це пісочниця з фізикою, створена Гаррі Ньюменом.",
-            "type": "гра",
+            "type": "Гра",
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Карта",
