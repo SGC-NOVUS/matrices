@@ -22,7 +22,7 @@
         },
         {
             "name": "Steam Account Token (GSLT)",
-            "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it in the Game Server Account Manager: https://steamcommunity.com/dev/managegameservers",
+            "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it in the Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
             "env_variable": "STEAM_GSLT",
             "default_value": "",
             "user_viewable": true,
@@ -104,7 +104,7 @@
                 },
                 "STEAM_GSLT": {
                     "name": "Steam Account Token (GSLT)",
-                    "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it in the Game Server Account Manager: https://steamcommunity.com/dev/managegameservers"
+                    "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it in the Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Use AppID 4000)."
                 },
                 "GAME_APPID": {
                     "name": "Game AppID (Client)",
@@ -147,7 +147,7 @@
                 },
                 "STEAM_GSLT": {
                     "name": "Токен сервера (Steam GSLT)",
-                    "description": "GSLT позволяет серверу отображаться в поиске и сохраняет его в избранном у игроков при смене IP. Сгенерируйте его в Game Server Account Manager: https://steamcommunity.com/dev/managegameservers"
+                    "description": "GSLT позволяет серверу отображаться в поиске и сохраняет его в избранном у игроков при смене IP. Сгенерируйте его в Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Используйте AppID 4000)."
                 },
                 "GAME_APPID": {
                     "name": "AppID Игры (Клиент)",
@@ -190,7 +190,7 @@
                 },
                 "STEAM_GSLT": {
                     "name": "Токен сервера (Steam GSLT)",
-                    "description": "GSLT дозволяє серверу відображатися в пошуку та зберігає його в обраному у гравців при зміні IP. Згенеруйте його у Game Server Account Manager: https://steamcommunity.com/dev/managegameservers"
+                    "description": "GSLT дозволяє серверу відображатися в пошуку та зберігає його в обраному у гравців при зміні IP. Згенеруйте його у Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
                 },
                 "GAME_APPID": {
                     "name": "AppID Гри (Клієнт)",
