@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "name": "Garry's Mod",
-    "description": "Garry's Mod is a sandbox physics game created by Garry Newman.",
+    "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
     "author": "SGC-NOVUS Tech",
     "icon_url": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4000/extras/6bc2f3d7419dbec4558deb9e0f6d6dc6.avif?t=1776868682",
     "type": "game",
@@ -10,10 +10,10 @@
     "install_image": "ghcr.io/sgc-novus/core-images:source",
     "startup_command": "./srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_GSLT}} +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' )",
     "install_script": "#!/bin/bash\n# steamcmd Base Installation Script\n## Server Files: /mnt/server\n## just in case someone removed the defaults.\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    echo -e \"steam user is not set.\\n\"\n    echo -e \"Using anonymous user.\\n\"\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nelse\n    echo -e \"user set to ${STEAM_USER}\"\nfi\n\n## download and install steamcmd\ncd /tmp\nmkdir -p /mnt/server/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd\nmkdir -p /mnt/server/steamapps # Fix steamcmd disk write error when this folder is missing\ncd /mnt/server/steamcmd\n\n# SteamCMD fails otherwise for some reason, even running as root.\n# This is changed at the end of the install process anyways.\nchown -R root:root /mnt\nexport HOME=/mnt/server\n\n## install game using steamcmd\n./steamcmd.sh +force_install_dir /mnt/server +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} $( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf %s '+@sSteamCmdForcePlatformType windows' ) +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} validate +quit\n\n## set up 32 bit libraries\nmkdir -p /mnt/server/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so\n## set up 64 bit libraries\nmkdir -p /mnt/server/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so\n\n## set up MySQLOO\necho \"=== Установка последней версии MySQLOO ===\"\nmkdir -p /mnt/server/garrysmod/lua/bin\ncd /mnt/server\nLATEST_MYSQLOO=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[] | select(.name == \"gmsv_mysqloo_linux.dll\") | .browser_download_url')\n\nif [ -n \"$LATEST_MYSQLOO\" ] && [ \"$LATEST_MYSQLOO\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO\" -o /mnt/server/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\n    echo \"MySQLOO успешно скачан и установлен.\"\nelse\n    echo \"Ошибка получения ссылки на MySQLOO.\"\nfi\n\n# Creating needed default files for the game\ncd /mnt/server/garrysmod/lua/autorun/server\necho '-- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop\n-- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID\n-- Use https://beta.configcreator.com/create/gmod/resources.lua to easily create a list based on your collection ID\nresource.AddWorkshop( \"\" )' > workshop.lua\n\ncd /mnt/server/garrysmod/cfg\necho '// Please do not set RCon in here, use the startup parameters.\nhostname\t\t\"New Gmod Server\"\nsv_password\t\t\"\"\nsv_loadingurl   \"\"\nsv_downloadurl  \"\"\n\n// Steam Server List Settings\n// sv_location \"eu\"\nsv_region \"255\"\nsv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\n// Server Limits\nsbox_maxprops\t\t100\nsbox_maxragdolls\t5\nsbox_maxnpcs\t\t10\nsbox_maxballoons\t10\nsbox_maxeffects\t\t10\nsbox_maxdynamite\t10\nsbox_maxlamps\t\t10\nsbox_maxthrusters\t10\nsbox_maxwheels\t\t10\nsbox_maxhoverballs\t10\nsbox_maxvehicles\t20\nsbox_maxbuttons\t\t10\nsbox_maxsents\t\t20\nsbox_maxemitters\t5\nsbox_godmode\t\t0\nsbox_noclip\t\t    0\n\n// Network Settings - Please keep these set to default.\nsv_minrate\t\t75000\nsv_maxrate\t\t0\ngmod_physiterations\t2\nnet_splitpacket_maxrate\t45000\ndecalfrequency\t\t12\n\n// Execute Ban Files - Please do not edit\nexec banned_ip.cfg\nexec banned_user.cfg\n\n// Add custom lines under here' > server.cfg",
-    "variables": [
+   "variables": [
         {
             "name": "Map",
-            "description": "The default map for the server.",
+            "description": "The default map loaded when the server starts (e.g., gm_flatgrass, gm_construct). Ensure the map is installed or included in your Workshop collection.",
             "env_variable": "SRCDS_MAP",
             "default_value": "gm_flatgrass",
             "user_viewable": true,
@@ -22,7 +22,7 @@
         },
         {
             "name": "Steam Account Token (GSLT)",
-            "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it in the Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+            "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
             "env_variable": "STEAM_GSLT",
             "default_value": "",
             "user_viewable": true,
@@ -31,7 +31,7 @@
         },
         {
             "name": "Game AppID (Client)",
-            "description": "AppID 4000 is used by the panel to auto-generate the GSLT token. Do not modify this.",
+            "description": "AppID 4000 is the Garry's Mod client identifier. Used internally by the panel to auto-generate the GSLT token. Do not modify.",
             "env_variable": "GAME_APPID",
             "default_value": "4000",
             "user_viewable": false,
@@ -40,7 +40,7 @@
         },
         {
             "name": "Source AppID (Server)",
-            "description": "AppID 4020 is used by SteamCMD to download Dedicated Server files. Do not change this.",
+            "description": "AppID 4020 is the dedicated server identifier used by SteamCMD to download core files. Do not modify.",
             "env_variable": "SRCDS_APPID",
             "default_value": "4020",
             "user_viewable": false,
@@ -49,7 +49,7 @@
         },
         {
             "name": "Workshop ID",
-            "description": "The ID of your workshop collection (the numbers at the end of the URL).",
+            "description": "The ID of your Steam Workshop collection (the numbers at the end of its URL). Allows the server to automatically download addons for joining players.",
             "env_variable": "WORKSHOP_ID",
             "default_value": "",
             "user_viewable": true,
@@ -58,7 +58,7 @@
         },
         {
             "name": "Gamemode",
-            "description": "The gamemode of your server.",
+            "description": "The default gamemode for your server (e.g., sandbox, darkrp, terrortown). This must exactly match the folder name inside your 'garrysmod/gamemodes/' directory.",
             "env_variable": "GAMEMODE",
             "default_value": "sandbox",
             "user_viewable": true,
@@ -67,7 +67,7 @@
         },
         {
             "name": "Max Players",
-            "description": "The maximum amount of players allowed on your game server.",
+            "description": "The maximum number of players allowed on the server. Higher player counts require more RAM and CPU power.",
             "env_variable": "MAX_PLAYERS",
             "default_value": "32",
             "user_viewable": true,
@@ -76,16 +76,16 @@
         },
         {
             "name": "Tickrate",
-            "description": "Tickrate determines how many times per second the server updates. Default is 22. 22-33 is ideal for Sandbox/DarkRP. 66 is for light servers/PvP. 100 heavily loads the CPU and is only for competitive modes with minimal props.",
+            "description": "Determines how many times per second the server updates. Default is 22. 22-33 is ideal for Sandbox/DarkRP. 66 is for light PvP. 100 heavily loads the CPU and is for competitive modes without physics.",
             "env_variable": "TICKRATE",
-            "default_value": "22",
+            "default_value": "33",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|integer|max:100"
         },
         {
             "name": "Lua Refresh",
-            "description": "0 = disable Lua refresh, 1 = enable Lua refresh.",
+            "description": "Enable (1) to automatically reload Lua scripts when files are modified. Great for development, but should be disabled (0) on live servers to save resources.",
             "env_variable": "LUA_REFRESH",
             "default_value": "0",
             "user_viewable": true,
@@ -93,132 +93,131 @@
             "rules": "required|boolean"
         }
     ],
-    "locales": {
+"locales": {
         "en": {
             "name": "Garry's Mod",
-            "description": "Garry's Mod is a sandbox physics game created by Garry Newman.",
+            "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Map",
-                    "description": "The default map for the server."
+                    "description": "The default map loaded when the server starts (e.g., gm_flatgrass, gm_construct). Ensure the map is installed or included in your Workshop collection."
                 },
                 "STEAM_GSLT": {
                     "name": "Steam Account Token (GSLT)",
-                    "description": "GSLT allows the server to appear in the public list and keeps it in favorites even if the IP changes. Generate it in the Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Use AppID 4000)."
+                    "description": "GSLT allows the server to appear in the public server list and keeps it in players' favorites even if the IP changes. Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000)."
                 },
                 "GAME_APPID": {
                     "name": "Game AppID (Client)",
-                    "description": "AppID 4000 is used by the panel to auto-generate the GSLT token. Do not modify this."
+                    "description": "AppID 4000 is the Garry's Mod client identifier. Used internally by the panel to auto-generate the GSLT token. Do not modify."
                 },
                 "SRCDS_APPID": {
                     "name": "Source AppID (Server)",
-                    "description": "AppID 4020 is used by SteamCMD to download Dedicated Server files. Do not change this."
+                    "description": "AppID 4020 is the dedicated server identifier used by SteamCMD to download core files. Do not modify."
                 },
                 "WORKSHOP_ID": {
                     "name": "Workshop ID",
-                    "description": "The ID of your workshop collection (the numbers at the end of the URL)."
+                    "description": "The ID of your Steam Workshop collection (the numbers at the end of its URL). Allows the server to automatically download addons for joining players."
                 },
                 "GAMEMODE": {
                     "name": "Gamemode",
-                    "description": "The gamemode of your server."
+                    "description": "The default gamemode for your server (e.g., sandbox, darkrp, terrortown). This must exactly match the folder name inside your 'garrysmod/gamemodes/' directory."
                 },
                 "MAX_PLAYERS": {
                     "name": "Max Players",
-                    "description": "The maximum amount of players allowed on your game server."
+                    "description": "The maximum number of players allowed on the server. Higher player counts require more RAM and CPU power."
                 },
                 "TICKRATE": {
                     "name": "Tickrate",
-                    "description": "Tickrate determines how many times per second the server updates. Default is 22. 22-33 is ideal for Sandbox/DarkRP. 66 is for light servers/PvP. 100 heavily loads the CPU and is only for competitive modes with minimal props."
+                    "description": "Determines how many times per second the server updates. Default is 22. 22-33 is ideal for Sandbox/DarkRP. 66 is for light PvP. 100 heavily loads the CPU and is for competitive modes without physics."
                 },
                 "LUA_REFRESH": {
                     "name": "Lua Refresh",
-                    "description": "0 = disable Lua refresh, 1 = enable Lua refresh."
+                    "description": "Enable (1) to automatically reload Lua scripts when files are modified. Great for development, but should be disabled (0) on live servers to save resources."
                 }
             }
         },
         "ru": {
             "name": "Garry's Mod",
-            "description": "Garry's Mod — это песочница с физикой, созданная Гарри Ньюменом.",
+            "description": "Garry's Mod — это легендарная физическая песочница на движке Source. Здесь нет заранее заданных целей: полная свобода для строительства механизмов, управления объектами и использования тысяч модификаций от сообщества. Идеальная платформа для запуска популярных режимов вроде Sandbox, DarkRP, TTT или реализации ваших собственных идей.",
             "variables": {
                 "SRCDS_MAP": {
-                    "name": "Карта",
-                    "description": "Карта по умолчанию для запуска сервера."
+                    "name": "Стартовая карта",
+                    "description": "Карта, загружаемая при старте сервера (например, gm_flatgrass, gm_construct). Убедитесь, что карта установлена или добавлена в вашу коллекцию Workshop."
                 },
                 "STEAM_GSLT": {
                     "name": "Токен сервера (Steam GSLT)",
-                    "description": "GSLT позволяет серверу отображаться в поиске и сохраняет его в избранном у игроков при смене IP. Сгенерируйте его в Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Используйте AppID 4000)."
+                    "description": "GSLT позволяет серверу отображаться в публичном поиске и сохраняет его в избранном у игроков при смене IP. Сгенерируйте токен здесь: https://steamcommunity.com/dev/managegameservers (Используйте AppID 4000)."
                 },
                 "GAME_APPID": {
                     "name": "AppID Игры (Клиент)",
-                    "description": "AppID 4000 используется панелью для автоматической генерации токена GSLT. Не изменяйте это значение."
+                    "description": "AppID 4000 — идентификатор клиента Garry's Mod. Используется панелью для автогенерации токена GSLT. Не изменяйте это значение."
                 },
                 "SRCDS_APPID": {
                     "name": "Source AppID (Сервер)",
-                    "description": "AppID 4020 используется SteamCMD для загрузки файлов сервера. Не изменяйте это значение."
+                    "description": "AppID 4020 — идентификатор выделенного сервера, используемый SteamCMD для загрузки системных файлов. Не изменяйте это значение."
                 },
                 "WORKSHOP_ID": {
                     "name": "ID коллекции Workshop",
-                    "description": "ID вашей коллекции из мастерской Steam (цифры в конце URL-адреса)."
+                    "description": "ID вашей коллекции из Мастерской Steam (цифры в конце URL-адреса). Позволяет серверу автоматически скачивать аддоны клиентам при подключении."
                 },
                 "GAMEMODE": {
                     "name": "Игровой режим (Gamemode)",
-                    "description": "Игровой режим вашего сервера."
+                    "description": "Игровой режим по умолчанию (например: sandbox, darkrp, terrortown). Название должно точно совпадать с именем папки режима в директории 'garrysmod/gamemodes/'."
                 },
                 "MAX_PLAYERS": {
                     "name": "Максимум игроков",
-                    "description": "Максимальное количество слотов на вашем сервере."
+                    "description": "Максимальное количество игроков на сервере. Чем больше слотов, тем выше нагрузка на процессор и оперативную память."
                 },
                 "TICKRATE": {
                     "name": "Тикрейт (Tickrate)",
-                    "description": "Количество обновлений сервера в секунду. По умолчанию: 22. Значения 22-33 оптимальны для Sandbox/DarkRP. 66 — для легких серверов или PvP. 100 сильно грузит CPU и подходит только для соревновательных режимов без физики."
+                    "description": "Количество обновлений сервера в секунду. По умолчанию: 22. 22-33 оптимально для Sandbox/DarkRP. 66 — для легкого PvP. 100 сильно грузит CPU и подходит только для режимов без физики."
                 },
                 "LUA_REFRESH": {
                     "name": "Обновление Lua",
-                    "description": "0 = отключить автообновление Lua, 1 = включить автообновление Lua."
+                    "description": "Включите (1) для автоматической перезагрузки Lua-скриптов при их изменении. Удобно для разработки, но на рабочем сервере лучше отключить (0) для экономии ресурсов."
                 }
             }
         },
         "uk": {
             "name": "Garry's Mod",
-            "description": "Garry's Mod — це пісочниця з фізикою, створена Гаррі Ньюменом.",
+            "description": "Garry's Mod — це легендарна фізична пісочниця на рушії Source. Тут немає заздалегідь визначених цілей: повна свобода для створення механізмів, керування об'єктами та використання тисяч модифікацій від спільноти. Ідеальна платформа для запуску популярних режимів, таких як Sandbox, DarkRP, TTT, або реалізації ваших власних ідей.",
             "variables": {
                 "SRCDS_MAP": {
-                    "name": "Карта",
-                    "description": "Карта за замовчуванням для запуску сервера."
+                    "name": "Стартова карта",
+                    "description": "Карта, що завантажується під час старту сервера (наприклад, gm_flatgrass, gm_construct). Переконайтеся, що карта встановлена або додана до вашої колекції Workshop."
                 },
                 "STEAM_GSLT": {
                     "name": "Токен сервера (Steam GSLT)",
-                    "description": "GSLT дозволяє серверу відображатися в пошуку та зберігає його в обраному у гравців при зміні IP. Згенеруйте його у Game Server Account Manager: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
+                    "description": "GSLT дозволяє серверу відображатися в публічному пошуку та зберігає його в обраному у гравців при зміні IP. Згенеруйте токен тут: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
                 },
                 "GAME_APPID": {
                     "name": "AppID Гри (Клієнт)",
-                    "description": "AppID 4000 використовується панеллю для автоматичної генерації токена GSLT. Не змінюйте це значення."
+                    "description": "AppID 4000 — ідентифікатор клієнта Garry's Mod. Використовується панеллю для автогенерації токена GSLT. Не змінюйте це значення."
                 },
                 "SRCDS_APPID": {
                     "name": "Source AppID (Сервер)",
-                    "description": "AppID 4020 використовується SteamCMD для завантаження файлів сервера. Не змінюйте це значення."
+                    "description": "AppID 4020 — ідентифікатор виділеного сервера, який використовується SteamCMD для завантаження системних файлів. Не змінюйте це значення."
                 },
                 "WORKSHOP_ID": {
                     "name": "ID колекції Workshop",
-                    "description": "ID вашої колекції з майстерні Steam (цифри наприкінці URL-адреси)."
+                    "description": "ID вашої колекції з Майстерні Steam (цифри наприкінці URL-адреси). Дозволяє серверу автоматично завантажувати аддони клієнтам під час підключення."
                 },
                 "GAMEMODE": {
                     "name": "Ігровий режим (Gamemode)",
-                    "description": "Ігровий режим вашого сервера."
+                    "description": "Ігровий режим за замовчуванням (наприклад: sandbox, darkrp, terrortown). Назва має точно збігатися з іменем папки режиму в директорії 'garrysmod/gamemodes/'."
                 },
                 "MAX_PLAYERS": {
                     "name": "Максимум гравців",
-                    "description": "Максимальна кількість слотів на вашому сервері."
+                    "description": "Максимальна кількість гравців на сервері. Чим більше слотів, тим вище навантаження на процесор та оперативну пам'ять."
                 },
                 "TICKRATE": {
                     "name": "Тікрейт (Tickrate)",
-                    "description": "Кількість оновлень сервера на секунду. За замовчуванням: 22. Значення 22-33 оптимальні для Sandbox/DarkRP. 66 — для легких серверів або PvP. 100 сильно навантажує CPU і підходить лише для змагальних режимів без фізики."
+                    "description": "Кількість оновлень сервера на секунду. За замовчуванням: 22. 22-33 оптимально для Sandbox/DarkRP. 66 — для легкого PvP. 100 сильно навантажує CPU і підходить лише для режимів без фізики."
                 },
                 "LUA_REFRESH": {
                     "name": "Оновлення Lua",
-                    "description": "0 = вимкнути автооновлення Lua, 1 = увімкнути автооновлення Lua."
+                    "description": "Увімкніть (1) для автоматичного перезавантаження Lua-скриптів при їх зміні. Зручно для розробки, але на робочому сервері краще вимкнути (0) для економії ресурсів."
                 }
             }
         }
     }
-}
