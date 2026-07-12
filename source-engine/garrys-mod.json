@@ -139,7 +139,6 @@
         "ru": {
             "name": "Garry's Mod",
             "description": "Garry's Mod — это песочница с физикой, созданная Гарри Ньюменом.",
-            "type": "игра",
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Карта",
@@ -182,7 +181,6 @@
         "uk": {
             "name": "Garry's Mod",
             "description": "Garry's Mod — це пісочниця з фізикою, створена Гаррі Ньюменом.",
-            "type": "гра",
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Карта",
