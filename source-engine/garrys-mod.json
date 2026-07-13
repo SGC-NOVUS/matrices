@@ -9,7 +9,38 @@
     "run_image": "ghcr.io/sgc-novus/core-images:source",
     "install_image": "ghcr.io/sgc-novus/core-images:source",
     "startup_command": "./srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} -authkey {{STEAM_API}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_GSLT}} +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' )",
+    "stop_command": "quit",
     "install_script": "#!/bin/bash\n# steamcmd Base Installation Script\n## Server Files: /mnt/server\n## just in case someone removed the defaults.\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    echo -e \"steam user is not set.\\n\"\n    echo -e \"Using anonymous user.\\n\"\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nelse\n    echo -e \"user set to ${STEAM_USER}\"\nfi\n\n## download and install steamcmd\ncd /tmp\nmkdir -p /mnt/server/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd\nmkdir -p /mnt/server/steamapps # Fix steamcmd disk write error when this folder is missing\ncd /mnt/server/steamcmd\n\n# SteamCMD fails otherwise for some reason, even running as root.\n# This is changed at the end of the install process anyways.\nchown -R root:root /mnt\nexport HOME=/mnt/server\n\n## install game using steamcmd\n./steamcmd.sh +force_install_dir /mnt/server +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} $( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf %s '+@sSteamCmdForcePlatformType windows' ) +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} validate +quit\n\n## set up 32 bit libraries\nmkdir -p /mnt/server/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so\n## set up 64 bit libraries\nmkdir -p /mnt/server/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so\n\n## set up MySQLOO\necho \"=== Установка последней версии MySQLOO ===\"\nmkdir -p /mnt/server/garrysmod/lua/bin\ncd /mnt/server\nLATEST_MYSQLOO=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[] | select(.name == \"gmsv_mysqloo_linux.dll\") | .browser_download_url')\n\nif [ -n \"$LATEST_MYSQLOO\" ] && [ \"$LATEST_MYSQLOO\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO\" -o /mnt/server/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\n    echo \"MySQLOO успешно скачан и установлен.\"\nelse\n    echo \"Ошибка получения ссылки на MySQLOO.\"\nfi\n\n# Creating needed default files for the game\ncd /mnt/server/garrysmod/lua/autorun/server\necho '-- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop\n-- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID\n-- Use https://beta.configcreator.com/create/gmod/resources.lua to easily create a list based on your collection ID\nresource.AddWorkshop( \"\" )' > workshop.lua\n\ncd /mnt/server/garrysmod/cfg\necho '// Please do not set RCon in here, use the startup parameters.\nhostname\t\t\"New Gmod Server\"\nsv_password\t\t\"\"\nsv_loadingurl   \"\"\nsv_downloadurl  \"\"\n\n// Steam Server List Settings\n// sv_location \"eu\"\nsv_region \"255\"\nsv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\n// Server Limits\nsbox_maxprops\t\t100\nsbox_maxragdolls\t5\nsbox_maxnpcs\t\t10\nsbox_maxballoons\t10\nsbox_maxeffects\t\t10\nsbox_maxdynamite\t10\nsbox_maxlamps\t\t10\nsbox_maxthrusters\t10\nsbox_maxwheels\t\t10\nsbox_maxhoverballs\t10\nsbox_maxvehicles\t20\nsbox_maxbuttons\t\t10\nsbox_maxsents\t\t20\nsbox_maxemitters\t5\nsbox_godmode\t\t0\nsbox_noclip\t\t    0\n\n// Network Settings - Please keep these set to default.\nsv_minrate\t\t75000\nsv_maxrate\t\t0\ngmod_physiterations\t2\nnet_splitpacket_maxrate\t45000\ndecalfrequency\t\t12\n\n// Execute Ban Files - Please do not edit\nexec banned_ip.cfg\nexec banned_user.cfg\n\n// Add custom lines under here' > server.cfg",
+    "ports_config": {
+        "client": {
+            "name": "Client Port",
+            "default_port": 27005,
+            "protocol": "udp",
+            "env_variable": "CLIENT_PORT",
+            "description": "Port used by the game client to connect."
+        },
+        "primary": {
+            "name": "Primary Port",
+            "default_port": 27015,
+            "protocol": "tcp+udp",
+            "env_variable": "SERVER_PORT",
+            "description": "Primary server port used for connections and RCON."
+        },
+        "reserve": {
+            "name": "Reserve Port",
+            "default_port": 27016,
+            "protocol": "tcp+udp",
+            "env_variable": "SERVER_PORT_RESERVE",
+            "description": "Reserve server port allocated in case of primary port issues or secondary services."
+        },
+        "sourcetv": {
+            "name": "SourceTV Port",
+            "default_port": 27025,
+            "protocol": "udp",
+            "env_variable": "SOURCETV_PORT",
+            "description": "Port used for broadcasting matches via SourceTV."
+        }
+    },
     "variables": [
         {
             "name": "Map",
@@ -76,7 +107,7 @@
         },
         {
             "name": "Tickrate",
-            "description": "Determines how many times per second the server updates. Default is 22. 22-33 is ideal for Sandbox/DarkRP. 66 is for light PvP. 100 heavily loads the CPU and is for competitive modes without physics.",
+            "description": "Determines how many times per second the server updates. Default is 33. 22-33 is ideal for Sandbox/DarkRP. 66 is for light PvP. 100 heavily loads the CPU and is for competitive modes without physics.",
             "env_variable": "TICKRATE",
             "default_value": "33",
             "user_viewable": true,
@@ -97,6 +128,24 @@
         "en": {
             "name": "Garry's Mod",
             "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
+            "ports_config": {
+                "client": {
+                    "name": "Client Port",
+                    "description": "Port used by the game client to connect."
+                },
+                "primary": {
+                    "name": "Primary Port",
+                    "description": "Primary server port used for connections and RCON."
+                },
+                "reserve": {
+                    "name": "Reserve Port",
+                    "description": "Reserve server port allocated in case of primary port issues or secondary services."
+                },
+                "sourcetv": {
+                    "name": "SourceTV Port",
+                    "description": "Port used for broadcasting matches via SourceTV."
+                }
+            },
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Map",
@@ -128,7 +177,7 @@
                 },
                 "TICKRATE": {
                     "name": "Tickrate",
-                    "description": "Determines how many times per second the server updates. Default is 22. 22-33 is ideal for Sandbox/DarkRP. 66 is for light PvP. 100 heavily loads the CPU and is for competitive modes without physics."
+                    "description": "Determines how many times per second the server updates. Default is 33. 22-33 is ideal for Sandbox/DarkRP. 66 is for light PvP. 100 heavily loads the CPU and is for competitive modes without physics."
                 },
                 "LUA_REFRESH": {
                     "name": "Lua Refresh",
@@ -139,6 +188,24 @@
         "ru": {
             "name": "Garry's Mod",
             "description": "Garry's Mod — это легендарная физическая песочница на движке Source. Здесь нет заранее заданных целей: полная свобода для строительства механизмов, управления объектами и использования тысяч модификаций от сообщества. Идеальная платформа для запуска популярных режимов вроде Sandbox, DarkRP, TTT или реализации ваших собственных идей.",
+            "ports_config": {
+                "client": {
+                    "name": "Клиентский порт",
+                    "description": "Порт, используемый игровым клиентом для подключения."
+                },
+                "primary": {
+                    "name": "Основной порт",
+                    "description": "Главный порт для подключения к серверу и RCON."
+                },
+                "reserve": {
+                    "name": "Резервный порт",
+                    "description": "Запасной порт, выделяемый на случай проблем с основным или для дополнительных сервисов."
+                },
+                "sourcetv": {
+                    "name": "Порт SourceTV",
+                    "description": "Порт, используемый для трансляции матчей через SourceTV."
+                }
+            },
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Стартовая карта",
@@ -170,7 +237,7 @@
                 },
                 "TICKRATE": {
                     "name": "Тикрейт (Tickrate)",
-                    "description": "Количество обновлений сервера в секунду. По умолчанию: 22. 22-33 оптимально для Sandbox/DarkRP. 66 — для легкого PvP. 100 сильно грузит CPU и подходит только для режимов без физики."
+                    "description": "Количество обновлений сервера в секунду. По умолчанию: 33. 22-33 оптимально для Sandbox/DarkRP. 66 — для легкого PvP. 100 сильно грузит CPU и подходит только для режимов без физики."
                 },
                 "LUA_REFRESH": {
                     "name": "Обновление Lua",
@@ -181,6 +248,24 @@
         "uk": {
             "name": "Garry's Mod",
             "description": "Garry's Mod — це легендарна фізична пісочниця на рушії Source. Тут немає заздалегідь визначених цілей: повна свобода для створення механізмів, керування об'єктами та використання тисяч модифікацій від спільноти. Ідеальна платформа для запуску популярних режимів, таких як Sandbox, DarkRP, TTT, або реалізації ваших власних ідей.",
+            "ports_config": {
+                "client": {
+                    "name": "Клієнтський порт",
+                    "description": "Порт, що використовується ігровим клієнтом для підключення."
+                },
+                "primary": {
+                    "name": "Основний порт",
+                    "description": "Головний порт для підключення до сервера та RCON."
+                },
+                "reserve": {
+                    "name": "Резервний порт",
+                    "description": "Запасний порт, що виділяється на випадок проблем з основним або для додаткових сервісів."
+                },
+                "sourcetv": {
+                    "name": "Порт SourceTV",
+                    "description": "Порт, що використовується для трансляції матчів через SourceTV."
+                }
+            },
             "variables": {
                 "SRCDS_MAP": {
                     "name": "Стартова карта",
@@ -212,7 +297,7 @@
                 },
                 "TICKRATE": {
                     "name": "Тікрейт (Tickrate)",
-                    "description": "Кількість оновлень сервера на секунду. За замовчуванням: 22. 22-33 оптимально для Sandbox/DarkRP. 66 — для легкого PvP. 100 сильно навантажує CPU і підходить лише для режимів без фізики."
+                    "description": "Кількість оновлень сервера на секунду. За замовчуванням: 33. 22-33 оптимально для Sandbox/DarkRP. 66 — для легкого PvP. 100 сильно навантажує CPU і підходить лише для режимів без фізики."
                 },
                 "LUA_REFRESH": {
                     "name": "Оновлення Lua",
