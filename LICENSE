@@ -1,0 +1,43 @@
+MIT License
+
+Copyright (c) 2026 SGC-NOVUS and Contributors <support@sgc-novus.fun>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+--------------------------------------------------------------------------------
+ADDITIONAL TERMS, CONDITIONS AND DISCLAIMERS:
+
+1. TRADEMARK & BRANDING RESTRICTIONS:
+   This license DOES NOT grant you any rights to use the trademarks, trade names, 
+   logos, or service marks of "SGC-NOVUS" or "NOVUS-OS" in any way that suggests 
+   official endorsement, sponsorship, or authorship by the original creators. 
+   Modified distributions utilizing these matrices must rebrand to avoid user confusion.
+
+2. THIRD-PARTY ASSETS & DEPENDENCIES:
+   This repository contains game server configurations, matrices, and metadata 
+   designed to interact with SteamCMD, Valve infrastructure, and third-party APIs. 
+   The project creators hold no affiliation with Valve Corporation or other game publishers. 
+   All game assets, logos, and trademarks referenced belong to their respective owners.
+
+3. AI-GENERATED CONTENT (LOCALIZATIONS):
+   Localizations, descriptions, and structural metadata within this repository are 
+   automatically synthesized using the Google Gemini AI API. While rigorous build 
+   pipelines are applied, translations may contain technical or contextual inaccuracies. 
+   Users implement these configurations at their own operational risk.
+
+--------------------------------------------------------------------------------
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE. 
