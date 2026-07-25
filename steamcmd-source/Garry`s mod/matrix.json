@@ -50,7 +50,7 @@
             "default_value": "New Gmod Server",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:128",
+            "rules": "required|string|max:63",
             "ui_group": "general"
         },
         {
