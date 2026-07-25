@@ -54,6 +54,16 @@
             "ui_group": "general"
         },
         {
+            "name": "Server Tags",
+            "description": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces.",
+            "env_variable": "SV_TAGS",
+            "default_value": "sandbox,build,wiremod",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:255|regex:/^[a-zA-Z0-9_\\-]+(,[a-zA-Z0-9_\\-]+)*$/",
+            "ui_group": "general"
+        },
+        {
             "name": "Server Password",
             "description": "Password to protect the server. Leave empty for a public server.",
             "env_variable": "SERVER_PASSWORD",
@@ -87,9 +97,9 @@
         },
         {
             "name": "Server Location",
-            "description": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+            "description": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
             "env_variable": "SV_LOCATION",
-            "default_value": "ua",
+            "default_value": "XX",
             "user_viewable": true,
             "user_editable": true,
             "type": "select",
@@ -227,7 +237,7 @@
                 },
                 "SV_LOCATION": {
                     "name": "Расположение сервера",
-                    "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения правильного флага в браузере серверов."
+                    "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения флага в браузере серверов. По умолчанию установлено значение 'XX' для международного/всемирного расположения."
                 },
                 "SV_LOADINGURL": {
                     "name": "URL экрана загрузки",
@@ -272,6 +282,10 @@
                 "LUA_REFRESH": {
                     "name": "Обновление Lua",
                     "description": "1 для включения, 0 для отключения автообновления Lua (Отключайте на продакшене для экономии ресурсов)."
+                },
+                "SV_TAGS": {
+                    "name": "Теги сервера",
+                    "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Укажите игровые режимы, темы или популярные установленные аддоны (например: sandbox,build,rp,wire,sbep). Не используйте пробелы."
                 }
             },
             "ports_config": {
@@ -315,7 +329,7 @@
                 },
                 "SV_LOCATION": {
                     "name": "Розташування сервера",
-                    "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення правильного прапора у браузері серверів."
+                    "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення прапора в браузері серверів. За замовчуванням 'XX' для міжнародного/світового розташування."
                 },
                 "SV_LOADINGURL": {
                     "name": "URL екрана завантаження",
@@ -360,6 +374,10 @@
                 "LUA_REFRESH": {
                     "name": "Оновлення Lua",
                     "description": "1 для увімкнення, 0 для вимкнення автооновлення Lua (Вимкніть у робочому середовищі для економії ресурсів)."
+                },
+                "SV_TAGS": {
+                    "name": "Теги сервера",
+                    "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Вкажіть ігрові режими, теми або популярні встановлені аддони (наприклад, sandbox,build,rp,wire,sbep). Не використовуйте пробіли."
                 }
             },
             "ports_config": {

@@ -117,7 +117,7 @@
                         "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
                         "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
                         "var_SV_REGION": "The geographic region for the Steam master server browser.",
-                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
                         "var_SV_LOADINGURL": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
                         "var_SV_DOWNLOADURL": "HTTP(S) URL for FastDL to speed up custom content downloads.",
                         "var_SRCDS_MAP": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
@@ -132,7 +132,8 @@
                         "port_client": "Port used by the game client to connect.",
                         "port_primary": "Primary server port used for connections and RCON.",
                         "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
-                        "port_sourcetv": "Port used for broadcasting matches via SourceTV."
+                        "port_sourcetv": "Port used for broadcasting matches via SourceTV.",
+                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
@@ -153,7 +154,7 @@
                         },
                         "SV_LOCATION": {
                             "name": "Расположение сервера",
-                            "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения правильного флага в браузере серверов."
+                            "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения флага в браузере серверов. По умолчанию установлено значение 'XX' для международного/всемирного расположения."
                         },
                         "SV_LOADINGURL": {
                             "name": "URL экрана загрузки",
@@ -198,6 +199,10 @@
                         "LUA_REFRESH": {
                             "name": "Обновление Lua",
                             "description": "1 для включения, 0 для отключения автообновления Lua (Отключайте на продакшене для экономии ресурсов)."
+                        },
+                        "SV_TAGS": {
+                            "name": "Теги сервера",
+                            "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Укажите игровые режимы, темы или популярные установленные аддоны (например: sandbox,build,rp,wire,sbep). Не используйте пробелы."
                         }
                     },
                     "ports_config": {
@@ -228,7 +233,7 @@
                         "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
                         "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
                         "var_SV_REGION": "The geographic region for the Steam master server browser.",
-                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
                         "var_SV_LOADINGURL": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
                         "var_SV_DOWNLOADURL": "HTTP(S) URL for FastDL to speed up custom content downloads.",
                         "var_SRCDS_MAP": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
@@ -243,7 +248,8 @@
                         "port_client": "Port used by the game client to connect.",
                         "port_primary": "Primary server port used for connections and RCON.",
                         "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
-                        "port_sourcetv": "Port used for broadcasting matches via SourceTV."
+                        "port_sourcetv": "Port used for broadcasting matches via SourceTV.",
+                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
@@ -264,7 +270,7 @@
                         },
                         "SV_LOCATION": {
                             "name": "Розташування сервера",
-                            "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення правильного прапора у браузері серверів."
+                            "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення прапора в браузері серверів. За замовчуванням 'XX' для міжнародного/світового розташування."
                         },
                         "SV_LOADINGURL": {
                             "name": "URL екрана завантаження",
@@ -309,6 +315,10 @@
                         "LUA_REFRESH": {
                             "name": "Оновлення Lua",
                             "description": "1 для увімкнення, 0 для вимкнення автооновлення Lua (Вимкніть у робочому середовищі для економії ресурсів)."
+                        },
+                        "SV_TAGS": {
+                            "name": "Теги сервера",
+                            "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Вкажіть ігрові режими, теми або популярні встановлені аддони (наприклад, sandbox,build,rp,wire,sbep). Не використовуйте пробіли."
                         }
                     },
                     "ports_config": {
