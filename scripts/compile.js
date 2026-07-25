@@ -241,12 +241,28 @@ async function main() {
                 siteData.docs[lang][docKey] = cache.docs[lang][docFile].text;
             } else {
                 console.log(`[INFO] [${lang}] Translating ${docFile}...`);
-                const prompt = `Translate the following Markdown to language code "${lang}". Preserve all markdown formatting, URLs, and code blocks exactly. Return ONLY the translated raw markdown.\n\n${sourceText}`;
+                const prompt = `You are a professional translator. Translate the following Markdown document to language code "${lang}". 
+CRITICAL INSTRUCTIONS:
+1. Preserve ALL markdown formatting, headers, lists, URLs, and code blocks exactly.
+2. DO NOT wrap the result in JSON. DO NOT return {"translation": "..."}.
+3. Return ONLY the raw, plain translated markdown text.
+
+Original text:
+${sourceText}`;
                 try {
                     const result = await model.generateContent(prompt);
                     let text = result.response.text().trim();
-                    if (text.startsWith('\`\`\`markdown')) text = text.replace(/^\`\`\`markdown/, '').replace(/\`\`\`$/, '').trim();
-                    else if (text.startsWith('\`\`\`')) text = text.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+                    if (text.startsWith('```markdown')) text = text.replace(/^```markdown/i, '').replace(/```$/, '').trim();
+                    else if (text.startsWith('```')) text = text.replace(/^```/, '').replace(/```$/, '').trim();
+                    
+                    if (text.startsWith('{') && text.endsWith('}')) {
+                        try {
+                            const parsed = JSON.parse(text);
+                            const keys = Object.keys(parsed);
+                            if (keys.length > 0) text = parsed[keys[0]];
+                            text = text.replace(/\\n/g, '\n');
+                        } catch(e) {}
+                    }
                     
                     cache.docs[lang][docFile] = { hash: sourceHash, text };
                     siteData.docs[lang][docKey] = text;
@@ -418,7 +434,7 @@ async function main() {
                 <div class="flex items-center gap-4">
                     <select id="lang-select" onchange="setLang(this.value)" class="bg-novus-800 text-white text-sm rounded-lg focus:ring-novus-accent focus:border-novus-accent block px-2 py-1 outline-none border border-white/10 cursor-pointer">
                     </select>
-                    <a href="https://github.com/\${REPO_OWNER_NAME}" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-github text-xl"></i></a>
+                      <a href="https://github.com/${REPO_OWNER_NAME}" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-github text-xl"></i></a>
                 </div>
             </div>
         </div>
@@ -690,6 +706,43 @@ async function main() {
         const files = await fs.readdir(path.join(ROOT_DIR, 'locales'));
         if (files.length === 0) await fs.rmdir(path.join(ROOT_DIR, 'locales'));
     } catch (e) {}
+
+    // ======== 5. ROOT README GENERATION ========
+    console.log('\n[INFO] Generating Root README.md...');
+    const uiEn = HEADERS.en;
+    let rootReadme = `<div align="center">\n`;
+    rootReadme += `  <img src="https://github.com/SGC-NOVUS.png" width="128" height="128" alt="SGC-NOVUS Logo" style="border-radius: 20%;" />\n`;
+    rootReadme += `  <h1>${uiEn.title}</h1>\n`;
+    rootReadme += `  <p><b>${uiEn.subtitle}</b></p>\n`;
+    rootReadme += `  <p>\n`;
+    rootReadme += `    <img src="https://img.shields.io/badge/Categories-${siteData.categories.length}-blue.svg" />\n`;
+    rootReadme += `    <img src="https://img.shields.io/badge/Locales-${allLangs.join('%20%7C%20')}-orange.svg" />\n`;
+    rootReadme += `  </p>\n</div>\n\n`;
+    
+    rootReadme += `<div align="center">\n  <a href="https://sgc-novus.github.io/matrices/">🌐 Web Hub (SPA)</a> &nbsp;|&nbsp; <a href="LICENSE">📄 License</a> &nbsp;|&nbsp; <a href="CONTRIBUTING.md">🤝 Contributing</a>\n</div>\n\n---\n\n## ${uiEn.browse}\n\n`;
+
+    rootReadme += '<table align="center">\n';
+    for (let i = 0; i < siteData.categories.length; i += 3) {
+        rootReadme += '  <tr>\n';
+        for (let j = 0; j < 3; j++) {
+            const cat = siteData.categories[i + j];
+            if (cat) {
+                rootReadme += `    <td align="center" width="250" style="padding: 15px;">\n`;
+                rootReadme += `      <img src="${cat.iconUrl}" width="80" height="80" alt="${cat.locales.en.name}" style="border-radius: 12px; margin-bottom: 10px;" /><br>\n`;
+                rootReadme += `      <b style="font-size: 16px;">${cat.locales.en.name}</b><br>\n`;
+                rootReadme += `      <small style="color: gray;">${cat.locales.en.description}</small>\n`;
+                rootReadme += `    </td>\n`;
+            } else {
+                rootReadme += `    <td width="250"></td>\n`; 
+            }
+        }
+        rootReadme += '  </tr>\n';
+    }
+    rootReadme += '</table>\n';
+
+    rootReadme += `\n<br>\n\n---\n<div align="center">\n  <sub><b>${uiEn.footerCopyright}</b></sub><br>\n  <sub><i>${uiEn.footerDeveloped}</i></sub><br><br>\n  <sub style="color: gray;">${uiEn.footerDisclaimer}</sub>\n</div>\n`;
+
+    await fs.writeFile(path.join(ROOT_DIR, 'README.md'), rootReadme, 'utf-8');
 
     console.log('\n[SUCCESS] Enterprise SPA Build Complete!');
 }
