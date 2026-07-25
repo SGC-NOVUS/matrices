@@ -45,7 +45,7 @@
     "variables": [
         {
             "name": "Server Hostname",
-            "description": "The public name of your server displayed in the server browser.",
+            "description": "The public name of your server displayed in the server browser. Note that due to technical limitations of the Garry's Mod engine, the display name is capped at 63 characters. While you can adjust this length limit within the variable matrix configuration parameters if necessary, please keep in mind that any characters exceeding this limit will be truncated by the game engine.",
             "env_variable": "SERVER_HOSTNAME",
             "default_value": "New Gmod Server",
             "user_viewable": true,
