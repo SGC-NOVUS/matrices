@@ -51,7 +51,79 @@ const HEADERS = {
         license: 'License',
         contributing: 'Contributing',
         categories: 'Categories',
-        locales: 'Locales'
+        locales: 'Locales',
+        category: 'Category',
+        games: 'Games',
+        all: 'All',
+        matricesTab: '🎮 Game Server Matrices',
+        runtimesTab: '🐳 Official Docker Runtimes',
+        runtimesDesc: 'Optimized base images for game servers.'
+    },
+    ru: {
+        title: 'Матрицы NOVUS-OS',
+        subtitle: 'Корпоративные конфигурации серверов и среды выполнения для NOVUS-OS. Автоматически сгенерированы и готовы к использованию.',
+        ports: '🔌 Конфигурация портов', 
+        vars: '⚙️ Переменные', 
+        portName: 'Имя порта', 
+        default: 'По умолчанию', 
+        protocol: 'Протокол', 
+        desc: 'Описание', 
+        variable: 'Переменная', 
+        envKey: 'Ключ среды', 
+        rules: 'Правила', 
+        off: 'Официальная матрица игрового сервера NOVUS-OS', 
+        avail: '🎮 Доступные матрицы', 
+        rootDesc: 'Официальный репозиторий корпоративных матриц и сред выполнения игровых серверов.', 
+        browse: '🗂️ Категории', 
+        backToRoot: '⬅️ Назад в Хаб',
+        footerCopyright: '© 2026 NOVUS•MATRICES. Все права защищены.',
+        footerDeveloped: 'Разработано SGC-NOVUS',
+        footerDisclaimer: 'Автоматически сгенерировано компилятором NOVUS-OS. Локализации с помощью Gemini API.',
+        configBtn: 'Конфигурация',
+        docsBtn: 'Документация',
+        license: 'Лицензия',
+        contributing: 'Участие',
+        categories: 'Категории',
+        locales: 'Языки',
+        category: 'Категория',
+        games: 'Игры',
+        all: 'Все',
+        matricesTab: '🎮 Матрицы игровых серверов',
+        runtimesTab: '🐳 Официальные Docker-образы',
+        runtimesDesc: 'Оптимизированные базовые образы для игровых серверов.'
+    },
+    uk: {
+        title: 'Матриці NOVUS-OS',
+        subtitle: 'Корпоративні конфігурації серверів та середовища виконання для NOVUS-OS. Автоматично згенеровані та готові до використання.',
+        ports: '🔌 Конфігурація портів', 
+        vars: '⚙️ Змінні', 
+        portName: 'Ім\'я порту', 
+        default: 'За замовчуванням', 
+        protocol: 'Протокол', 
+        desc: 'Опис', 
+        variable: 'Змінна', 
+        envKey: 'Ключ середовища', 
+        rules: 'Правила', 
+        off: 'Офіційна матриця ігрового сервера NOVUS-OS', 
+        avail: '🎮 Доступні матриці', 
+        rootDesc: 'Офіційний репозиторій корпоративних матриць та середовищ виконання ігрових серверів.', 
+        browse: '🗂️ Категорії', 
+        backToRoot: '⬅️ Назад до Хабу',
+        footerCopyright: '© 2026 NOVUS•MATRICES. Усі права захищено.',
+        footerDeveloped: 'Розроблено SGC-NOVUS',
+        footerDisclaimer: 'Автоматично згенеровано компілятором NOVUS-OS. Локалізації за допомогою Gemini API.',
+        configBtn: 'Конфігурація',
+        docsBtn: 'Документація',
+        license: 'Ліцензія',
+        contributing: 'Участь',
+        categories: 'Категорії',
+        locales: 'Мови',
+        category: 'Категорія',
+        games: 'Ігри',
+        all: 'Всі',
+        matricesTab: '🎮 Матриці ігрових серверів',
+        runtimesTab: '🐳 Офіційні Docker-образи',
+        runtimesDesc: 'Оптимізовані базові образи для ігрових серверів.'
     }
 };
 
@@ -507,10 +579,10 @@ ${sourceText}`;
         <div class="px-4 sm:px-6 lg:px-8 mb-8 border-b border-white/5">
             <div class="flex space-x-8">
                 <button onclick="switchTab('matrices')" id="tab-matrices" class="border-b-2 border-novus-accent text-white pb-4 px-1 text-sm font-medium transition-colors">
-                    <i class="fas fa-gamepad mr-2 text-novus-accent"></i> <span data-i18n="matricesTab">Game Server Matrices</span>
+                    <span data-i18n="matricesTab">🎮 Game Server Matrices</span>
                 </button>
                 <button onclick="switchTab('runtimes')" id="tab-runtimes" class="border-b-2 border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300 pb-4 px-1 text-sm font-medium transition-colors">
-                    <i class="fab fa-docker mr-2"></i> <span data-i18n="runtimesTab">Official Docker Runtimes</span>
+                    <span data-i18n="runtimesTab">🐳 Official Docker Runtimes</span>
                 </button>
             </div>
         </div>
@@ -816,11 +888,11 @@ ${sourceText}`;
                                 <div class="flex flex-wrap gap-1">\${componentsHtml}</div>
                             </div>
                         </div>
-                        <p class="text-gray-400 text-sm flex-grow mb-6 line-clamp-4">\${locale.description || ''}</p>
+                        <div class="text-gray-400 text-sm flex-grow mb-6 overflow-y-auto max-h-40 pr-2 whitespace-pre-wrap">\${locale.description || ''}</div>
                         <div class="mt-auto">
                             <div class="bg-black/40 border border-white/10 rounded-lg flex items-center overflow-hidden">
                                 <code class="px-3 py-2 text-[11px] text-gray-300 flex-grow font-mono truncate">\${rt.pullCmd}</code>
-                                <button onclick="navigator.clipboard.writeText('\${rt.pullCmd}'); this.innerHTML='<i class=\\'fas fa-check\\'></i>'; setTimeout(() => this.innerHTML='<i class=\\'fas fa-copy\\'></i>', 2000)" class="bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-4 py-2 transition-colors border-l border-white/10 flex-shrink-0">
+                                <button onclick="copyDockerPull('\${rt.pullCmd}', this)" class="bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-4 py-2 transition-colors border-l border-white/10 flex-shrink-0">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
@@ -849,6 +921,37 @@ ${sourceText}`;
                 document.getElementById('runtimes-container').classList.remove('hidden');
                 loadRuntimes();
             }
+        }
+
+        window.copyDockerPull = function(text, btn) {
+            const originalHTML = btn.innerHTML;
+            const successHTML = '<i class="fas fa-check text-green-400"></i>';
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.innerHTML = successHTML;
+                    setTimeout(() => btn.innerHTML = originalHTML, 2000);
+                }).catch(() => fallbackCopy(text, btn, originalHTML, successHTML));
+            } else {
+                fallbackCopy(text, btn, originalHTML, successHTML);
+            }
+        };
+
+        function fallbackCopy(text, btn, originalHTML, successHTML) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            el.style.position = 'fixed';
+            el.style.opacity = '0';
+            document.body.appendChild(el);
+            el.select();
+            try {
+                document.execCommand('copy');
+                btn.innerHTML = successHTML;
+                setTimeout(() => btn.innerHTML = originalHTML, 2000);
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(el);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
