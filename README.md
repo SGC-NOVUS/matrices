@@ -19,7 +19,7 @@
 <table align="center">
   <tr>
     <td align="center" width="250" style="padding: 15px;">
-      <img src="https://raw.githubusercontent.com/SGC-NOVUS/matrices/main/steamcmd-source/steamcmd_source.webp" width="80" height="80" alt="SteamCMD Servers" style="border-radius: 12px; margin-bottom: 10px;" /><br>
+      <img src="https://hub.sgc-novus.fun/steamcmd-source/steamcmd_source.webp" width="80" height="80" alt="SteamCMD Servers" style="border-radius: 12px; margin-bottom: 10px;" /><br>
       <b style="font-size: 16px;">SteamCMD Servers</b><br>
       <small style="color: gray;">Official game servers running on Source engine and SteamCMD architecture.</small>
     </td>
