@@ -1,0 +1,387 @@
+{
+    "version": "1.0.0",
+    "name": "Garry's Mod",
+    "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
+    "author": "SGC-NOVUS Tech",
+    "icon_url": "https://raw.githubusercontent.com/SGC-NOVUS/matrices/main/steamcmd-source/Garry%60s%20mod/garrys_mod.webp",
+    "type": "game",
+    "slug": "GMOD",
+    "run_image": "ghcr.io/sgc-novus/core-images:source",
+    "install_image": "ghcr.io/sgc-novus/core-images:source",
+    "data_dir": "/home/container",
+    "startup_command": "./srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} -authkey {{STEAM_API}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_GSLT}} +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' ) +hostname \"{{SERVER_HOSTNAME}}\" +sv_password \"{{SERVER_PASSWORD}}\" +rcon_password \"{{RCON_PASSWORD}}\" +sv_region {{SV_REGION}} +sv_location \"{{SV_LOCATION}}\" +sv_loadingurl \"{{SV_LOADINGURL}}\" +sv_downloadurl \"{{SV_DOWNLOADURL}}\"",
+    "stop_command": "quit",
+    "install_script": "#!/bin/bash\n# steamcmd Base Installation Script\n## Server Files: /home/container\n## just in case someone removed the defaults.\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    echo -e \"steam user is not set.\\n\"\n    echo -e \"Using anonymous user.\\n\"\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nelse\n    echo -e \"user set to ${STEAM_USER}\"\nfi\n\n## download and install steamcmd\ncd /tmp\nmkdir -p /home/container/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /home/container/steamcmd\nmkdir -p /home/container/steamapps # Fix steamcmd disk write error when this folder is missing\ncd /home/container/steamcmd\n\n# SteamCMD fails otherwise for some reason, even running as root.\n# This is changed at the end of the install process anyways.\nchown -R root:root /home/container\nexport HOME=/home/container\n\n## install game using steamcmd\n./steamcmd.sh +force_install_dir /home/container +login ${STEAM_USER:-anonymous} ${STEAM_PASS} ${STEAM_AUTH} $( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf %s '+@sSteamCmdForcePlatformType windows' || printf %s '+@sSteamCmdForcePlatformType linux' ) +app_update ${SRCDS_APPID:-4020} ${EXTRA_FLAGS} validate +quit\n\n## set up 32 bit libraries\nmkdir -p /home/container/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so\n## set up 64 bit libraries\nmkdir -p /home/container/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so\n\n## set up MySQLOO\necho \"=== Установка последней версии MySQLOO ===\"\nmkdir -p /home/container/garrysmod/lua/bin\ncd /home/container\nLATEST_MYSQLOO=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[] | select(.name == \"gmsv_mysqloo_linux.dll\") | .browser_download_url')\n\nif [ -n \"$LATEST_MYSQLOO\" ] && [ \"$LATEST_MYSQLOO\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\n    echo \"MySQLOO успешно скачан и установлен.\"\nelse\n    echo \"Ошибка получения ссылки на MySQLOO.\"\nfi\n\n# Creating needed default files for the game\ncd /home/container/garrysmod/lua/autorun/server\necho '-- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop\n-- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID\n-- Use https://beta.configcreator.com/create/gmod/resources.lua to easily create a list based on your collection ID\nresource.AddWorkshop( \"\" )' > workshop.lua\n\ncd /home/container/garrysmod/cfg\necho '// Please do not set RCon, Hostname, Password, Region, Location or URLs in here; use the startup parameters in panel.\n\n// Steam Server List Settings\nsv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\n// Server Limits\nsbox_maxprops       100\nsbox_maxragdolls    5\nsbox_maxnpcs        10\nsbox_maxballoons    10\nsbox_maxeffects     10\nsbox_maxdynamite    10\nsbox_maxlamps       10\nsbox_maxthrusters   10\nsbox_maxwheels      10\nsbox_maxhoverballs  10\nsbox_maxvehicles    20\nsbox_maxbuttons     10\nsbox_maxsents       20\nsbox_maxemitters    5\nsbox_godmode        0\nsbox_noclip         0\n\n// Network Settings - Please keep these set to default.\nsv_minrate          75000\nsv_maxrate          0\ngmod_physiterations 2\nnet_splitpacket_maxrate 45000\ndecalfrequency      12\n\n// Execute Ban Files - Please do not edit\nexec banned_ip.cfg\nexec banned_user.cfg\n\n// Add custom lines under here' > server.cfg",
+    "ports_config": {
+        "client": {
+            "name": "Client Port",
+            "default_port": 27005,
+            "protocol": "udp",
+            "env_variable": "CLIENT_PORT",
+            "description": "Port used by the game client to connect."
+        },
+        "primary": {
+            "name": "Primary Port",
+            "default_port": 27015,
+            "protocol": "tcp+udp",
+            "env_variable": "SERVER_PORT",
+            "description": "Primary server port used for connections and RCON."
+        },
+        "reserve": {
+            "name": "Reserve Port",
+            "default_port": 27016,
+            "protocol": "tcp+udp",
+            "env_variable": "SERVER_PORT_RESERVE",
+            "description": "Reserve server port allocated in case of primary port issues or secondary services."
+        },
+        "sourcetv": {
+            "name": "SourceTV Port",
+            "default_port": 27025,
+            "protocol": "udp",
+            "env_variable": "SOURCETV_PORT",
+            "description": "Port used for broadcasting matches via SourceTV."
+        }
+    },
+    "variables": [
+        {
+            "name": "Server Hostname",
+            "description": "The public name of your server displayed in the server browser.",
+            "env_variable": "SERVER_HOSTNAME",
+            "default_value": "New Gmod Server",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:128",
+            "ui_group": "general"
+        },
+        {
+            "name": "Server Password",
+            "description": "Password to protect the server. Leave empty for a public server.",
+            "env_variable": "SERVER_PASSWORD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:64",
+            "ui_group": "security"
+        },
+        {
+            "name": "RCON Password",
+            "description": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
+            "env_variable": "RCON_PASSWORD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:64",
+            "ui_group": "security"
+        },
+        {
+            "name": "Steam Region",
+            "description": "The geographic region for the Steam master server browser.",
+            "env_variable": "SV_REGION",
+            "default_value": "255",
+            "user_viewable": true,
+            "user_editable": true,
+            "type": "select",
+            "options_source": "steam_regions",
+            "rules": "required|integer",
+            "ui_group": "general"
+        },
+        {
+            "name": "Server Location",
+            "description": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+            "env_variable": "SV_LOCATION",
+            "default_value": "ua",
+            "user_viewable": true,
+            "user_editable": true,
+            "type": "select",
+            "options_source": "countries_iso2",
+            "rules": "required|string|size:2",
+            "ui_group": "general"
+        },
+        {
+            "name": "Loading Screen URL",
+            "description": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
+            "env_variable": "SV_LOADINGURL",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "ui_group": "gameplay"
+        },
+        {
+            "name": "FastDL URL",
+            "description": "HTTP(S) URL for FastDL to speed up custom content downloads.",
+            "env_variable": "SV_DOWNLOADURL",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "ui_group": "security"
+        },
+        {
+            "name": "Map",
+            "description": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
+            "env_variable": "SRCDS_MAP",
+            "default_value": "gm_flatgrass",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|alpha_dash",
+            "ui_group": "gameplay"
+        },
+        {
+            "name": "Steam Account Token (GSLT)",
+            "description": "Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+            "env_variable": "STEAM_GSLT",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|alpha_num|size:32",
+            "ui_group": "security"
+        },
+        {
+            "name": "Game AppID (Client)",
+            "description": "AppID 4000 is the Garry's Mod client identifier. Used by panel auto-generators. Do not modify.",
+            "env_variable": "GAME_APPID",
+            "default_value": "4000",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|integer|in:4000"
+        },
+        {
+            "name": "Source AppID (Server)",
+            "description": "AppID 4020 is used by SteamCMD to download server files. Do not modify.",
+            "env_variable": "SRCDS_APPID",
+            "default_value": "4020",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|integer|in:4020"
+        },
+        {
+            "name": "Workshop ID",
+            "description": "The ID of your Steam Workshop collection (numbers at the end of the URL).",
+            "env_variable": "WORKSHOP_ID",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|numeric",
+            "ui_group": "gameplay"
+        },
+        {
+            "name": "Gamemode",
+            "description": "The default gamemode folder name (e.g., sandbox, darkrp, terrortown).",
+            "env_variable": "GAMEMODE",
+            "default_value": "sandbox",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|alpha_dash",
+            "ui_group": "gameplay"
+        },
+        {
+            "name": "Max Players",
+            "description": "The maximum number of players allowed on the server.",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "32",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|max:128",
+            "ui_group": "gameplay"
+        },
+        {
+            "name": "Tickrate",
+            "description": "Determines server updates per second. Default is 33. Higher values heavily load the CPU.",
+            "env_variable": "TICKRATE",
+            "default_value": "33",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|max:100",
+            "ui_group": "gameplay"
+        },
+        {
+            "name": "Lua Refresh",
+            "description": "1 to enable, 0 to disable Lua autorefresh (Disable on production to save resources).",
+            "env_variable": "LUA_REFRESH",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "ui_group": "security"
+        }
+    ],
+    "locales": {
+        "ru": {
+            "variables": {
+                "SERVER_HOSTNAME": {
+                    "name": "Имя сервера",
+                    "description": "Публичное имя вашего сервера, отображаемое в браузере серверов."
+                },
+                "SERVER_PASSWORD": {
+                    "name": "Пароль сервера",
+                    "description": "Пароль для защиты сервера. Оставьте пустым для публичного сервера."
+                },
+                "RCON_PASSWORD": {
+                    "name": "RCON Пароль",
+                    "description": "Пароль для доступа к удаленной консоли. Оставьте пустым, чтобы полностью отключить RCON (Рекомендуется для безопасности)."
+                },
+                "SV_REGION": {
+                    "name": "Регион Steam",
+                    "description": "Географический регион для поиска в мастер-сервере Steam."
+                },
+                "SV_LOCATION": {
+                    "name": "Расположение сервера",
+                    "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения правильного флага в браузере серверов."
+                },
+                "SV_LOADINGURL": {
+                    "name": "URL экрана загрузки",
+                    "description": "Пользовательский URL экрана загрузки. Поддерживает %s (SteamID64) и %m (карта)."
+                },
+                "SV_DOWNLOADURL": {
+                    "name": "FastDL URL",
+                    "description": "HTTP(S) URL для FastDL для ускорения загрузки пользовательского контента."
+                },
+                "SRCDS_MAP": {
+                    "name": "Карта",
+                    "description": "Карта по умолчанию, загружаемая при запуске сервера. Убедитесь, что карта установлена или добавлена в Workshop."
+                },
+                "STEAM_GSLT": {
+                    "name": "Токен аккаунта Steam (GSLT)",
+                    "description": "Сгенерируйте его на странице: https://steamcommunity.com/dev/managegameservers (Используйте AppID 4000)."
+                },
+                "GAME_APPID": {
+                    "name": "AppID игры (Клиент)",
+                    "description": "AppID 4000 — идентификатор клиента Garry's Mod. Используется автогенераторами панели. Не изменяйте."
+                },
+                "SRCDS_APPID": {
+                    "name": "AppID Source (Сервер)",
+                    "description": "AppID 4020 используется SteamCMD для загрузки файлов сервера. Не изменяйте."
+                },
+                "WORKSHOP_ID": {
+                    "name": "ID Workshop",
+                    "description": "ID вашей коллекции Steam Workshop (числа в конце URL)."
+                },
+                "GAMEMODE": {
+                    "name": "Игровой режим (Gamemode)",
+                    "description": "Имя папки игрового режима по умолчанию (например, sandbox, darkrp, terrortown)."
+                },
+                "MAX_PLAYERS": {
+                    "name": "Максимум игроков",
+                    "description": "Максимальное количество игроков, разрешенное на сервере."
+                },
+                "TICKRATE": {
+                    "name": "Tickrate",
+                    "description": "Определяет количество обновлений сервера в секунду. По умолчанию 33. Более высокие значения сильно нагружают CPU."
+                },
+                "LUA_REFRESH": {
+                    "name": "Обновление Lua",
+                    "description": "1 для включения, 0 для отключения автообновления Lua (Отключайте в продакшене для экономии ресурсов)."
+                }
+            },
+            "ports_config": {
+                "client": {
+                    "name": "Клиентский порт",
+                    "description": "Порт, используемый игровым клиентом для подключения."
+                },
+                "primary": {
+                    "name": "Основной порт",
+                    "description": "Основной порт сервера, используемый для подключений и RCON."
+                },
+                "reserve": {
+                    "name": "Резервный порт",
+                    "description": "Резервный порт сервера, выделяемый на случай проблем с основным портом или вторичных служб."
+                },
+                "sourcetv": {
+                    "name": "Порт SourceTV",
+                    "description": "Порт, используемый для трансляции матчей через SourceTV."
+                }
+            },
+            "name": "Garry's Mod",
+            "description": "Garry's Mod — это культовая физическая песочница на базе движка Source. Она предлагает полную свободу действий без заданных целей: создавайте пропы, собирайте сложные механизмы и устанавливайте тысячи пользовательских аддонов, чтобы играть в такие режимы, как Sandbox, DarkRP, TTT или ваши собственные уникальные творения."
+        },
+        "uk": {
+            "variables": {
+                "SERVER_HOSTNAME": {
+                    "name": "Назва сервера",
+                    "description": "Публічна назва вашого сервера, яка відображається у браузері серверів."
+                },
+                "SERVER_PASSWORD": {
+                    "name": "Пароль сервера",
+                    "description": "Пароль для захисту сервера. Залиште порожнім для публічного сервера."
+                },
+                "RCON_PASSWORD": {
+                    "name": "RCON Пароль",
+                    "description": "Пароль, який використовується для віддаленого доступу до консолі. Залиште порожнім, щоб повністю вимкнути RCON (Рекомендується для безпеки)."
+                },
+                "SV_REGION": {
+                    "name": "Регіон Steam",
+                    "description": "Географічний регіон для головного браузера серверів Steam."
+                },
+                "SV_LOCATION": {
+                    "name": "Розташування сервера",
+                    "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення правильного прапора у браузері серверів."
+                },
+                "SV_LOADINGURL": {
+                    "name": "URL екрана завантаження",
+                    "description": "Користувацький URL екрана завантаження. Підтримує %s (SteamID64) та %m (мапа)."
+                },
+                "SV_DOWNLOADURL": {
+                    "name": "FastDL URL",
+                    "description": "HTTP(S) URL для FastDL для прискорення завантаження користувацького контенту."
+                },
+                "SRCDS_MAP": {
+                    "name": "Мапа",
+                    "description": "Мапа за замовчуванням, яка завантажується при запуску сервера. Переконайтеся, що мапа встановлена або включена в Workshop."
+                },
+                "STEAM_GSLT": {
+                    "name": "Токен акаунта Steam (GSLT)",
+                    "description": "Згенеруйте його на: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
+                },
+                "GAME_APPID": {
+                    "name": "AppID гри (клієнт)",
+                    "description": "AppID 4000 — це ідентифікатор клієнта Garry's Mod. Використовується автогенераторами панелі. Не змінюйте."
+                },
+                "SRCDS_APPID": {
+                    "name": "Source AppID (сервер)",
+                    "description": "AppID 4020 використовується SteamCMD для завантаження файлів сервера. Не змінюйте."
+                },
+                "WORKSHOP_ID": {
+                    "name": "ID Workshop",
+                    "description": "ID вашої колекції Steam Workshop (цифри в кінці URL)."
+                },
+                "GAMEMODE": {
+                    "name": "Режим гри",
+                    "description": "Назва папки режиму гри за замовчуванням (наприклад, sandbox, darkrp, terrortown)."
+                },
+                "MAX_PLAYERS": {
+                    "name": "Максимум гравців",
+                    "description": "Максимальна кількість гравців, дозволена на сервері."
+                },
+                "TICKRATE": {
+                    "name": "Tickrate",
+                    "description": "Визначає кількість оновлень сервера на секунду. За замовчуванням 33. Вищі значення сильно навантажують CPU."
+                },
+                "LUA_REFRESH": {
+                    "name": "Оновлення Lua",
+                    "description": "1 для увімкнення, 0 для вимкнення автооновлення Lua (Вимкніть на «продакшені» для економії ресурсів)."
+                }
+            },
+            "ports_config": {
+                "client": {
+                    "name": "Клієнтський порт",
+                    "description": "Порт, який використовується ігровим клієнтом для підключення."
+                },
+                "primary": {
+                    "name": "Основний порт",
+                    "description": "Основний порт сервера, який використовується для підключень та RCON."
+                },
+                "reserve": {
+                    "name": "Резервний порт",
+                    "description": "Резервний порт сервера, виділений на випадок проблем з основним портом або вторинних сервісів."
+                },
+                "sourcetv": {
+                    "name": "Порт SourceTV",
+                    "description": "Порт, який використовується для трансляції матчів через SourceTV."
+                }
+            },
+            "name": "Garry's Mod",
+            "description": "Garry's Mod — це неперевершена пісочниця з фізикою на базі рушія Source. Вона пропонує повну свободу без попередньо визначених цілей: створюйте пропи, збирайте складні механізми та встановлюйте тисячі спільнотних аддонів, щоб грати в кастомні режими на кшталт Sandbox, DarkRP, TTT або ваші власні унікальні витвори."
+        }
+    }
+}
