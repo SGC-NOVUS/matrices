@@ -113,7 +113,7 @@
                 "ru": {
                     "_meta_source": {
                         "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
-                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser.",
+                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser. Note that due to technical limitations of the Garry's Mod engine, the display name is capped at 63 characters. While you can adjust this length limit within the variable matrix configuration parameters if necessary, please keep in mind that any characters exceeding this limit will be truncated by the game engine.",
                         "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
                         "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
                         "var_SV_REGION": "The geographic region for the Steam master server browser.",
@@ -137,7 +137,7 @@
                     "variables": {
                         "SERVER_HOSTNAME": {
                             "name": "Имя сервера",
-                            "description": "Публичное название вашего сервера, отображающееся в браузере серверов."
+                            "description": "Публичное имя вашего сервера, отображаемое в браузере серверов. Обратите внимание, что из-за технических ограничений движка Garry's Mod отображаемое имя ограничено 63 символами. Хотя при необходимости вы можете изменить этот лимит длины в конфигурационных параметрах матричной переменной, учтите, что любые символы, превышающие этот лимит, будут обрезаны игровым движком."
                         },
                         "SERVER_PASSWORD": {
                             "name": "Пароль сервера",
@@ -224,7 +224,7 @@
                 "uk": {
                     "_meta_source": {
                         "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
-                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser.",
+                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser. Note that due to technical limitations of the Garry's Mod engine, the display name is capped at 63 characters. While you can adjust this length limit within the variable matrix configuration parameters if necessary, please keep in mind that any characters exceeding this limit will be truncated by the game engine.",
                         "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
                         "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
                         "var_SV_REGION": "The geographic region for the Steam master server browser.",
@@ -247,8 +247,8 @@
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
-                            "name": "Назва сервера",
-                            "description": "Публічна назва вашого сервера, яка відображається у браузері серверів."
+                            "name": "Ім'я сервера",
+                            "description": "Публічна назва вашого сервера, яка відображається в браузері серверів. Зауважте, що через технічні обмеження рушія Garry's Mod відображуване ім'я обмежене 63 символами. Хоча ви можете налаштувати цей ліміт довжини в параметрах конфігурації матриці змінних, якщо це необхідно, будь ласка, майте на увазі, що будь-які символи, що перевищують цей ліміт, будуть обрізані ігровим рушієм."
                         },
                         "SERVER_PASSWORD": {
                             "name": "Пароль сервера",
