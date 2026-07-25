@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 
 const REPO_OWNER_NAME = 'SGC-NOVUS/matrices';
 const BRANCH = 'main';
+const CUSTOM_DOMAIN = 'https://hub.sgc-novus.fun';
 const SCRIPTS_DIR = __dirname;
 const ROOT_DIR = path.resolve(__dirname, '../'); 
 
@@ -295,10 +296,12 @@ ${sourceText}`;
         };
 
         const catIconRawUrl = `https://raw.githubusercontent.com/${REPO_OWNER_NAME}/${BRANCH}/${encodeURIComponent(catFolder)}/${catIconName}`;
+        const catIconCustomUrl = `${CUSTOM_DOMAIN}/${encodeURIComponent(catFolder)}/${catIconName}`;
         
         const catSiteData = {
             id: catFolder,
-            iconUrl: catIconRawUrl,
+            iconUrl: catIconCustomUrl,
+            fallbackIconUrl: catIconRawUrl,
             locales: { en: { name: catMeta.name, description: catMeta.description } },
             games: []
         };
@@ -336,8 +339,15 @@ ${sourceText}`;
             }
             
             const cleanGameRelativePath = `${encodeURIComponent(catFolder)}/${encodeURIComponent(gameDir.name)}`;
-            const finalGameIconUrl = `https://raw.githubusercontent.com/${REPO_OWNER_NAME}/${BRANCH}/${cleanGameRelativePath}/${gameIconName}`;
-            baseJson.icon_url = finalGameIconUrl;
+            const outJsonName = `${sanitizedGameName}.json`;
+
+            const customJsonUrl = `${CUSTOM_DOMAIN}/${cleanGameRelativePath}/${outJsonName}`;
+            const rawJsonUrl = `https://raw.githubusercontent.com/${REPO_OWNER_NAME}/${BRANCH}/${cleanGameRelativePath}/${outJsonName}`;
+
+            const customIconUrl = `${CUSTOM_DOMAIN}/${cleanGameRelativePath}/${gameIconName}`;
+            const rawIconUrl = `https://raw.githubusercontent.com/${REPO_OWNER_NAME}/${BRANCH}/${cleanGameRelativePath}/${gameIconName}`;
+
+            baseJson.icon_url = customIconUrl;
 
             if (!cache.matrices[catFolder][gameDir.name]) cache.matrices[catFolder][gameDir.name] = {};
             
@@ -349,14 +359,16 @@ ${sourceText}`;
                 finalLocales[lang] = cleanData;
             }
 
-            const outJsonName = `${sanitizedGameName}.json`;
             const releaseJson = { ...baseJson, locales: finalLocales };
             await fs.writeFile(path.join(catPath, gameDir.name, outJsonName), JSON.stringify(releaseJson, null, 4));
             
             const gameSiteData = {
                 id: sanitizedGameName,
-                iconUrl: finalGameIconUrl,
-                configUrl: `https://raw.githubusercontent.com/${REPO_OWNER_NAME}/${BRANCH}/${cleanGameRelativePath}/${outJsonName}`,
+                iconUrl: customIconUrl,
+                fallbackIconUrl: rawIconUrl,
+                configUrl: customJsonUrl,
+                fallbackConfigUrl: rawJsonUrl,
+                filename: outJsonName,
                 locales: { en: baseJson }
             };
             for (const lang of targetLangs) gameSiteData.locales[lang] = finalLocales[lang];
@@ -397,6 +409,61 @@ ${sourceText}`;
             }
         }
         window.SITE_DATA = ${JSON.stringify(siteData)};
+
+        function applyImageFallbacks() {
+            document.querySelectorAll('img.lazy-fallback').forEach(img => {
+                if (img.dataset.initialized) return;
+                img.dataset.initialized = "true";
+                const primary = img.dataset.primary;
+                const fallback = img.dataset.fallback;
+                let fallbackTriggered = false;
+                const triggerFallback = () => {
+                    if (!fallbackTriggered) {
+                        fallbackTriggered = true;
+                        img.src = fallback;
+                    }
+                };
+                img.onerror = triggerFallback;
+                img.src = primary;
+                setTimeout(() => {
+                    if (!img.complete && !fallbackTriggered) {
+                        triggerFallback();
+                    }
+                }, 2500);
+            });
+        }
+
+        async function downloadConfig(e, primary, fallback, filename) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            const btn = e.currentTarget || e.target;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>';
+            btn.style.pointerEvents = 'none';
+            
+            let urlToDownload = primary;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2500);
+                const res = await fetch(primary, { signal: controller.signal, method: 'HEAD' });
+                clearTimeout(timeoutId);
+                if (!res.ok) throw new Error('Status ' + res.status);
+            } catch (err) {
+                console.warn('Primary download unavailable, using fallback.', err);
+                urlToDownload = fallback;
+            }
+            
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = urlToDownload;
+            a.download = filename || 'config.json';
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            btn.innerHTML = originalHtml;
+            btn.style.pointerEvents = 'auto';
+        }
     </script>
     <style>
         body { background-color: #0B1120; color: #F8FAFC; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -461,7 +528,7 @@ ${sourceText}`;
         <div id="view-category" class="view-section hidden">
             <button onclick="navigate('home')" class="mb-6 text-gray-400 hover:text-white flex items-center text-sm font-semibold transition-colors"><i class="fas fa-arrow-left mr-2"></i> <span data-i18n="backToRoot"></span></button>
             <div class="flex items-center gap-4 mb-10 pb-4 border-b border-white/10">
-                <img id="cat-icon" src="" class="h-14 w-14 rounded-xl shadow-lg">
+                <img id="cat-icon" src="" class="lazy-fallback h-14 w-14 rounded-xl shadow-lg">
                 <div>
                     <h2 id="cat-title" class="text-3xl font-bold"></h2>
                     <p id="cat-desc" class="text-gray-400 mt-1"></p>
@@ -477,12 +544,12 @@ ${sourceText}`;
             
             <div class="glass-panel rounded-2xl p-8 mb-8">
                 <div class="flex items-start md:items-center gap-6 flex-col md:flex-row">
-                    <img id="game-icon" src="" class="h-24 w-24 rounded-2xl shadow-xl border border-white/10">
+                    <img id="game-icon" src="" class="lazy-fallback h-24 w-24 rounded-2xl shadow-xl border border-white/10">
                     <div class="flex-grow">
                         <h2 id="game-title" class="text-3xl font-bold mb-2"></h2>
                         <p id="game-desc" class="text-gray-400"></p>
                     </div>
-                    <a id="game-dl-btn" href="#" download class="bg-novus-accent hover:bg-novus-accentHover text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg shadow-novus-accent/20 flex items-center whitespace-nowrap">
+                    <a id="game-dl-btn" href="#" class="bg-novus-accent hover:bg-novus-accentHover text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-lg shadow-novus-accent/20 flex items-center whitespace-nowrap">
                         <i class="fas fa-download mr-2"></i> <span data-i18n="configBtn"></span> (JSON)
                     </a>
                 </div>
@@ -593,7 +660,7 @@ ${sourceText}`;
                     html += \`
                         <div class="glass-panel rounded-2xl p-6 game-card cursor-pointer flex flex-col justify-center h-full" onclick="navigate('category', '\${cat.id}')">
                             <div class="flex items-center gap-4">
-                                <img src="\${cat.iconUrl}" class="h-16 w-16 rounded-xl shadow-md border border-white/5">
+                                <img data-primary="\${cat.iconUrl}" data-fallback="\${cat.fallbackIconUrl}" class="lazy-fallback h-16 w-16 rounded-xl shadow-md border border-white/5">
                                 <div>
                                     <h3 class="text-xl font-bold">\${lCat.name || cat.locales.en.name}</h3>
                                     <p class="text-sm text-gray-400 mt-1 line-clamp-2">\${lCat.description || cat.locales.en.description}</p>
@@ -608,7 +675,10 @@ ${sourceText}`;
                 const lCat = cat.locales[currentLang] || cat.locales.en;
                 document.getElementById('cat-title').innerText = lCat.name || cat.locales.en.name;
                 document.getElementById('cat-desc').innerText = lCat.description || cat.locales.en.description;
-                document.getElementById('cat-icon').src = cat.iconUrl;
+                const catIconEl = document.getElementById('cat-icon');
+                catIconEl.dataset.primary = cat.iconUrl;
+                catIconEl.dataset.fallback = cat.fallbackIconUrl;
+                delete catIconEl.dataset.initialized;
 
                 let html = '';
                 cat.games.forEach(game => {
@@ -616,7 +686,7 @@ ${sourceText}`;
                     html += \`
                         <div class="glass-panel rounded-2xl p-6 game-card flex flex-col h-full cursor-pointer" onclick="navigate('game', {cat: '\${cat.id}', game: '\${game.id}'})">
                             <div class="flex items-start gap-4 mb-4">
-                                <img src="\${game.iconUrl}" class="h-14 w-14 rounded-xl shadow-md border border-white/5">
+                                <img data-primary="\${game.iconUrl}" data-fallback="\${game.fallbackIconUrl}" class="lazy-fallback h-14 w-14 rounded-xl shadow-md border border-white/5">
                                 <div>
                                     <h3 class="text-lg font-bold leading-tight mb-1">\${lGame.name || game.locales.en.name}</h3>
                                     <span class="text-[10px] font-bold uppercase tracking-wider bg-novus-accent/20 text-novus-accent px-2 py-0.5 rounded border border-novus-accent/20">JSON</span>
@@ -624,7 +694,7 @@ ${sourceText}`;
                             </div>
                             <p class="text-gray-400 text-sm flex-grow mb-6 line-clamp-3">\${lGame.description || game.locales.en.description}</p>
                             <div class="flex gap-3 mt-auto">
-                                <a href="\${game.configUrl}" onclick="event.stopPropagation()" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-center text-sm font-semibold py-2 px-3 rounded-lg transition-colors" download>
+                                <a href="#" onclick="downloadConfig(event, '\${game.configUrl}', '\${game.fallbackConfigUrl}', '\${game.filename}')" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-center text-sm font-semibold py-2 px-3 rounded-lg transition-colors">
                                     <i class="fas fa-download mr-1"></i> \${ui.configBtn}
                                 </a>
                                 <button class="flex-1 bg-novus-accent/10 hover:bg-novus-accent/20 text-novus-accent border border-novus-accent/20 text-center text-sm font-semibold py-2 px-3 rounded-lg transition-colors">
@@ -643,8 +713,11 @@ ${sourceText}`;
                 document.getElementById('btn-back-cat').onclick = () => navigate('category', cat.id);
                 document.getElementById('game-title').innerText = lGame.name || game.locales.en.name;
                 document.getElementById('game-desc').innerText = lGame.description || game.locales.en.description;
-                document.getElementById('game-icon').src = game.iconUrl;
-                document.getElementById('game-dl-btn').href = game.configUrl;
+                const gameIconEl = document.getElementById('game-icon');
+                gameIconEl.dataset.primary = game.iconUrl;
+                gameIconEl.dataset.fallback = game.fallbackIconUrl;
+                delete gameIconEl.dataset.initialized;
+                document.getElementById('game-dl-btn').onclick = (e) => downloadConfig(e, game.configUrl, game.fallbackConfigUrl, game.filename);
 
                 let portsHtml = '';
                 const ports = lGame.ports_config || game.locales.en.ports_config || {};
@@ -686,6 +759,8 @@ ${sourceText}`;
                 const md = data.docs[currentLang]?.[currentContext] || data.docs.en[currentContext] || '# Document not found';
                 document.getElementById('doc-content').innerHTML = marked.parse(md);
             }
+
+            applyImageFallbacks();
         }
 
         document.addEventListener('DOMContentLoaded', render);
