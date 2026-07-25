@@ -1,18 +1,326 @@
 {
     "ui": {
-        "ru": {},
-        "uk": {}
+        "ru": {
+            "title": "Официальные матрицы игровых серверов",
+            "subtitle": "Конфигурации серверов корпоративного уровня и среды выполнения для NOVUS-OS. Автоматически сгенерировано и готово к продакшену.",
+            "ports": "🔌 Конфигурация портов",
+            "vars": "⚙️ Переменные",
+            "portName": "Имя порта",
+            "default": "По умолчанию",
+            "protocol": "Протокол",
+            "desc": "Описание",
+            "variable": "Переменная",
+            "envKey": "Env Key",
+            "rules": "Правила",
+            "off": "Официальная матрица игровых серверов NOVUS-OS",
+            "avail": "🎮 Доступные игровые матрицы",
+            "rootDesc": "Официальный репозиторий матриц и сред выполнения игровых серверов корпоративного уровня.",
+            "browse": "🗂️ Просмотр категорий",
+            "backToRoot": "⬅️ Назад в хаб",
+            "footerCopyright": "© 2026 NOVUS•MATRICES. Все права защищены.",
+            "footerDeveloped": "Разработано SGC-NOVUS",
+            "footerDisclaimer": "Автоматически сгенерировано компилятором NOVUS-OS. Локализация выполнена Gemini API.",
+            "configBtn": "Конфигурация",
+            "docsBtn": "Документация",
+            "license": "Лицензия",
+            "contributing": "Участие в разработке",
+            "categories": "Категории",
+            "locales": "Локали"
+        },
+        "uk": {
+            "title": "Офіційні матриці ігрових серверів",
+            "subtitle": "Конфігурації серверів та середовища виконання корпоративного класу для NOVUS-OS. Автоматично згенеровано та готово до продакшну.",
+            "ports": "🔌 Конфігурація портів",
+            "vars": "⚙️ Змінні",
+            "portName": "Назва порту",
+            "default": "За замовчуванням",
+            "protocol": "Протокол",
+            "desc": "Опис",
+            "variable": "Змінна",
+            "envKey": "Env Key",
+            "rules": "Правила",
+            "off": "Офіційна матриця ігрових серверів NOVUS-OS",
+            "avail": "🎮 Доступні ігрові матриці",
+            "rootDesc": "Репозиторій офіційних корпоративних матриць і середовищ виконання ігрових серверів.",
+            "browse": "🗂️ Переглянути категорії",
+            "backToRoot": "⬅️ Назад до хабу",
+            "footerCopyright": "© 2026 NOVUS•MATRICES. Усі права захищено.",
+            "footerDeveloped": "Розроблено SGC-NOVUS",
+            "footerDisclaimer": "Автоматично згенеровано компілятором NOVUS-OS. Локалізації за допомогою Gemini API.",
+            "configBtn": "Конфігурація",
+            "docsBtn": "Документація",
+            "license": "Ліцензія",
+            "contributing": "Участь у розробці",
+            "categories": "Категорії",
+            "locales": "Мови"
+        }
     },
     "docs": {
-        "ru": {},
-        "uk": {}
+        "ru": {
+            "LICENSE": {
+                "hash": "abb8b5eb9289d708e2752ebca547082f",
+                "text": "{\n  \"translation\": \"Лицензия MIT\\n\\nCopyright (c) 2026 SGC-NOVUS и Участники <support@sgc-novus.fun>\\n\\nНастоящим предоставляется бесплатное разрешение любому лицу, получившему копию\\nэтого программного обеспечения и сопутствующей документации (далее — «Программное обеспечение»),\\nиспользовать Программное обеспечение без ограничений, включая права на просмотр, копирование,\\nизменение, объединение, публикацию, распространение, сублицензирование и/или продажу\\nкопий Программного обеспечения, а также разрешать лицам, которым предоставляется\\nПрограммное обеспечение, делать то же самое, при соблюдении следующих условий:\\n\\nУказанное выше уведомление об авторских правах и данное уведомление о разрешении должны быть включены во все\\nкопии или значительные части Программного обеспечения.\\n\\n--------------------------------------------------------------------------------\\nДОПОЛНИТЕЛЬНЫЕ УСЛОВИЯ, ПОЛОЖЕНИЯ И ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ:\\n\\n1. ОГРАНИЧЕНИЯ ТОВАРНЫХ ЗНАКОВ И БРЕНДИНГА:\\n   Данная лицензия НЕ предоставляет вам никаких прав на использование товарных знаков,\\n   фирменных наименований, логотипов или знаков обслуживания «SGC-NOVUS» или «NOVUS-OS»\\n   любым способом, который подразумевает официальное одобрение, спонсорскую поддержку\\n   или авторство со стороны первоначальных создателей. Измененные дистрибутивы,\\n   использующие эти матрицы, должны быть переименованы во избежание путаницы у пользователей.\\n\\n2. СТОРОННИЕ АКТИВЫ И ЗАВИСИМОСТИ:\\n   Этот репозиторий содержит конфигурации игровых серверов, матрицы и метаданные,\\n   предназначенные для взаимодействия со SteamCMD, инфраструктурой Valve и сторонними API.\\n   Создатели проекта не связаны с Valve Corporation или другими издателями игр.\\n   Все упомянутые игровые активы, логотипы и товарные знаки принадлежат их законным владельцам.\\n\\n3. КОНТЕНТ, СГЕНЕРИРОВАННЫЙ ИИ (ЛОКАЛИЗАЦИИ):\\n   Локализации, описания и структурные метаданные в этом репозитории\\n   автоматически создаются с использованием API Google Gemini AI. Несмотря на применение\\n   строгих конвейеров сборки, переводы могут содержать технические или контекстуальные неточности.\\n   Пользователи используют эти конфигурации на свой собственный операционный риск.\\n\\n--------------------------------------------------------------------------------\\nПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ,\\nЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, ПОМИМО ПРОЧЕГО, ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ,\\nСООТВЕТСТВИЯ ОПРЕДЕЛЕННЫМ ЦЕЛЯМ И НЕНАРУШЕНИЯ ПРАВ. НИ ПРИ КАКИХ ОБСТОЯТЕЛЬСТВАХ\\nАВТОРЫ ИЛИ ПРАВООБЛАДАТЕЛИ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ПО ИСКАМ, ЗА УЩЕРБ ИЛИ ЗА ЛЮБЫЕ ДРУГИЕ\\nТРЕБОВАНИЯ, В РЕЗУЛЬТАТЕ ДЕЙСТВИЯ КОНТРАКТА, ДЕЛИКТА ИЛИ ИНЫМ ОБРАЗОМ, ВОЗНИКАЮЩИЕ ИЗ,\\nИЛИ В СВЯЗИ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ, ИЛИ ИСПОЛЬЗОВАНИЕМ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ, ИЛИ ИНЫМИ\\nДЕЙСТВИЯМИ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ.\"\n}"
+            },
+            "CONTRIBUTING.md": {
+                "hash": "d6c3cd96f10d5468aa06eeab925c57ca",
+                "text": "# How to Contribute to NOVUS-OS Matrices\n\nYou can contribute by creating a new pull request or testing existing pull requests. Testing is very important and highly appreciated!\n\n## General Rules for Game Matrices\n\n- **Don't be afraid to submit PRs**. We welcome all contributions! Feel free to open a draft PR if your matrix isn't quite finished yet.\n- **Keep it secure**. Do not include start scripts that a user can easily exploit. If a complex start script is needed, it should be heavily sanitized.\n- **Keep it simple**. We don't need massive install scripts. Keep installation clean, optimized, and readable.\n- **Keep it small**. Only download what is absolutely needed. Use standardized NOVUS-OS core Docker images.\n- **Use Official NOVUS-OS Runtimes**. If you need a specific environment, use our official images. Self-hosted or undocumented third-party images will not be accepted for security reasons.\n- **Export from the Panel**. Please use the NOVUS-OS panel tools to manage and export your matrix JSON files. This ensures the structure remains strictly compliant.\n\n## Making a Pull Request\n\n1. **Test Your Matrix**: Make sure your install process is rock solid. We will test matrices before they are merged.\n2. **Make a Branch**: Please make a separate branch for your work (e.g., `feature/add-minecraft-bedrock`). Do not PR directly from your `main` branch.\n3. **Open a PR**: [Click here to open a Pull Request](https://github.com/SGC-NOVUS/matrices/compare). Ensure your English `.json` matrix is properly formatted. \n4. **AI Security Audit**: All Pull Requests are subject to an automated AI security audit. The AI will scan your matrix for malicious scripts, insecure containers, and compliance with our guidelines. A detailed report will be generated and sent to our team.\n5. **Localization is Automatic**: You DO NOT need to translate your matrix. Simply provide the English JSON, and the NOVUS-OS Compiler will automatically translate your matrix into all supported languages using Gemini AI when we merge it!\n\n---\n\n## Feedback & Support\n\nHave ideas for improvement or found an issue? We are always open to suggestions!\n- **Email:** contribute@sgc-novus.fun"
+            }
+        },
+        "uk": {
+            "LICENSE": {
+                "hash": "abb8b5eb9289d708e2752ebca547082f",
+                "text": "{\n  \"translation\": \"Ліцензія MIT\\n\\nCopyright (c) 2026 SGC-NOVUS та Учасники <support@sgc-novus.fun>\\n\\nЦим дозволом безоплатно надається будь-якій особі, яка отримує копію\\nцього програмного забезпечення та супутньої документації (далі — «Програмне забезпечення»),\\nправо без обмежень користуватися Програмним забезпеченням, включаючи право на\\nперегляд, копіювання, модифікацію, злиття, публікацію, розповсюдження, субліцензування\\nта/або продаж копій Програмного забезпечення, а також дозволяти особам, яким\\nнадано Програмне забезпечення, робити це за таких умов:\\n\\nВищенаведене повідомлення про авторські права та цей дозвіл мають бути включені в усі\\nкопії або суттєві частини Програмного забезпечення.\\n\\n--------------------------------------------------------------------------------\\nДОДАТКОВІ УМОВИ, ПОЛОЖЕННЯ ТА ВІДМОВИ ВІД ВІДПОВІДАЛЬНОСТІ:\\n\\n1. ОБМЕЖЕННЯ ЩОДО ТОРГОВЕЛЬНИХ МАРК ТА БРЕНДИНГУ:\\n   Ця ліцензія НЕ надає вам жодних прав на використання товарних знаків, фірмових найменувань,\\n   логотипів або знаків обслуговування «SGC-NOVUS» або «NOVUS-OS» у будь-який спосіб, що іплікує\\n   офіційне схвалення, спонсорство чи авторство з боку оригінальних творців.\\n   Модифіковані дистрибутиви, що використовують ці матриці, повинні змінити брендинг, щоб уникнути плутанини серед користувачів.\\n\\n2. СТОРОННІ АКТИВИ ТА ЗАЛЕЖНОСТІ:\\n   Цей репозиторій містить конфігурації ігрових серверів, матриці та метадані,\\n   призначені для взаємодії зі SteamCMD, інфраструктурою Valve та сторонніми API.\\n   Творці проєкту не пов'язані з Valve Corporation чи іншими ігровими видавцями.\\n   Усі згадані ігрові активи, логотипи та торговельні марки належать їхнім відповідним власникам.\\n\\n3. ЗГЕНЕРОВАНИЙ ШІ КОНТЕНТ (ЛОКАЛІЗАЦІЇ):\\n   Локалізації, описи та структурні метадані в цьому репозиторії\\n   створюються автоматично за допомогою API штучного інтелекту Google Gemini. Незважаючи на застосування\\n   суворих конвеєрів збирання, переклади можуть містити технічні або контекстні неточності.\\n   Користувачі впроваджують ці конфігурації на свій власний операційний ризик.\\n\\n--------------------------------------------------------------------------------\\nПРОГРАМНЕ ЗАБЕЗПЕЧЕННЯ НАДАЄТЬСЯ «ЯК Є», БЕЗ ЖОДНИХ ГАРАНТІЙ, ЯВНИХ АБО\\nНЕПРЯМИХ, ВКЛЮЧАЮЧИ, АЛЕ НЕ ОБМЕЖУЮЧИСЬ ГАРАНТІЯМИ MERCHANTABILITY (ПРИДАТНОСТІ ДЛЯ ПЕВНИХ ЦІЛЕЙ),\\nFITNESS FOR A PARTICULAR PURPOSE (ПРИДАТНОСТІ ДЛЯ КОНКРЕТНИХ ЦІЛЕЙ) ТА NON-INFRINGEMENT (НЕНАПРУШЕННЯ ПРАВ). АВТОРИ АБО ПРАВОВЛАСНИКИ НІ ЗА ЯКИХ ОБСТАВИН НЕ НЕСУТЬ ВІДПОВІДАЛЬНОСТІ ЗА БУДЬ-ЯКІ ПОЗОВИ, ШКОДУ ЧИ ІНШУ\\nВІДПОВІДАЛЬНІСТЬ, БУДЬ ТО В РАМКАХ ДОГОВОРУ, ДЕКТУ ЧI ІНШИМ ЧИНОМ, ЩО ВИНИКАЮТЬ З,\\nУ РЕЗУЛЬТАТІ АБО У ЗВ'ЯЗКУ З ПРОГРАМНИМ ЗАБЕЗПЕЧЕННЯМ АБО ВИКОРИСТАННЯМ ІНШИХ ДІЙ З ПРОГРАМНИМ ЗАБЕЗПЕЧЕННЯМ.\"\n}"
+            },
+            "CONTRIBUTING.md": {
+                "hash": "d6c3cd96f10d5468aa06eeab925c57ca",
+                "text": "{\n  \"translation\": \"# Як зробити внесок у матриці NOVUS-OS\\n\\nВи можете зробити свій внесок, створивши новий запит на злиття (pull request) або тестуючи наявні запити. Тестування є дуже важливим і високо цінується!\\n\\n## Загальні правила для ігрових матриць\\n\\n- **Не бійтеся надсилати PR**. Ми вітаємо будь-які внески! Не соромтеся відкривати чорновий PR (draft PR), якщо ваша матриця ще не зовсім готова.\\n- **Дбайте про безпеку**. Не включайте скрипти запуску, які користувач може легко зламати. Якщо потрібен складний скрипт запуску, його слід ретельно перевірити та очистити.\\n- **Зберігайте простоту**. Нам не потрібні величезні скрипти встановлення. Зберігайте встановлення чистим, оптимізованим та зрозумілим.\\n- **Тримайте невеликий розмір**. Завантажуйте лише те, що абсолютно необхідно. Використовуйте стандартні базові Docker-образи NOVUS-OS.\\n- **Використовуйте офіційні середовища виконання NOVUS-OS**. Якщо вам потрібне певне середовище, використовуйте наші офіційні образи. З міркувань безпеки сторонні образи, які розміщуються самостійно або не документовані, прийматися не будуть.\\n- **Експортуйте з панелі**. Будь ласка, використовуйте інструменти панелі NOVUS-OS для керування та експорту файлів JSON вашої матриці. Це гарантує, що структура залишатиметься суворо сумісною.\\n\\n## Створення запиту на злиття (Pull Request)\\n\\n1. **Протестуйте свою матрицю**: Переконайтеся, що ваш процес встановлення працює ідеально. Ми будемо тестувати матриці перед їх об'єднанням.\\n2. **Створіть гілку**: Будь ласка, створіть окрему гілку для своєї роботи (наприклад, `feature/add-minecraft-bedrock`). Не надсилайте PR безпосередньо з вашої гілки `main`.\\n3. **Відкрийте PR**: [Клацніть тут, щоб відкрити запит на злиття](https://github.com/SGC-NOVUS/matrices/compare). Переконайтеся, що ваша англійська матриця `.json` правильно відформатована.\\n4. **Аудит безпеки за допомогою штучного інтелекту**: Усі запити на злиття підлягають автоматичному аудиту безпеки ШІ. ШІ просканує вашу матрицю на наявність шкідливих скриптів, небезпечних контейнерів та дотримання наших інструкцій. Детальний звіт буде згенеровано та надіслано нашій команді.\\n5. **Локалізація відбувається автоматично**: Вам НЕ потрібно перекладати вашу матрицю. Просто надайте англійський JSON, і компілятор NOVUS-OS автоматично перекладе вашу матрицю на всі підтримувані мови за допомогою Gemini AI, коли ми її об'єднаємо!\\n\\n---\\n\\n## Відгуки та підтримка\\n\\nМаєте ідеї щодо вдосконалення чи знайшли проблему? Ми завжди відкриті до пропозицій!\\n- **Електронна пошта:** contribute@sgc-novus.fun\"\n}"
+            }
+        }
     },
     "categories": {
-        "steamcmd-source": {}
+        "steamcmd-source": {
+            "ru": {
+                "_meta_source": {
+                    "desc": "Official game servers running on Source engine and SteamCMD architecture."
+                },
+                "name": "Серверы SteamCMD",
+                "description": "Официальные игровые серверы, работающие на движке Source и архитектуре SteamCMD."
+            },
+            "uk": {
+                "_meta_source": {
+                    "desc": "Official game servers running on Source engine and SteamCMD architecture."
+                },
+                "name": "SteamCMD Сервери",
+                "description": "Офіційні ігрові сервери, що працюють на рушії Source та архітектурі SteamCMD."
+            }
+        }
     },
     "matrices": {
         "steamcmd-source": {
-            "Garry`s mod": {}
+            "Garry`s mod": {
+                "ru": {
+                    "_meta_source": {
+                        "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
+                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser.",
+                        "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
+                        "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
+                        "var_SV_REGION": "The geographic region for the Steam master server browser.",
+                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+                        "var_SV_LOADINGURL": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
+                        "var_SV_DOWNLOADURL": "HTTP(S) URL for FastDL to speed up custom content downloads.",
+                        "var_SRCDS_MAP": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
+                        "var_STEAM_GSLT": "Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+                        "var_GAME_APPID": "AppID 4000 is the Garry's Mod client identifier. Used by panel auto-generators. Do not modify.",
+                        "var_SRCDS_APPID": "AppID 4020 is used by SteamCMD to download server files. Do not modify.",
+                        "var_WORKSHOP_ID": "The ID of your Steam Workshop collection (numbers at the end of the URL).",
+                        "var_GAMEMODE": "The default gamemode folder name (e.g., sandbox, darkrp, terrortown).",
+                        "var_MAX_PLAYERS": "The maximum number of players allowed on the server.",
+                        "var_TICKRATE": "Determines server updates per second. Default is 33. Higher values heavily load the CPU.",
+                        "var_LUA_REFRESH": "1 to enable, 0 to disable Lua autorefresh (Disable on production to save resources).",
+                        "port_client": "Port used by the game client to connect.",
+                        "port_primary": "Primary server port used for connections and RCON.",
+                        "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
+                        "port_sourcetv": "Port used for broadcasting matches via SourceTV."
+                    },
+                    "variables": {
+                        "SERVER_HOSTNAME": {
+                            "name": "Имя сервера",
+                            "description": "Публичное имя вашего сервера, отображаемое в браузере серверов."
+                        },
+                        "SERVER_PASSWORD": {
+                            "name": "Пароль сервера",
+                            "description": "Пароль для защиты сервера. Оставьте пустым для публичного сервера."
+                        },
+                        "RCON_PASSWORD": {
+                            "name": "RCON Пароль",
+                            "description": "Пароль для доступа к удаленной консоли. Оставьте пустым, чтобы полностью отключить RCON (Рекомендуется для безопасности)."
+                        },
+                        "SV_REGION": {
+                            "name": "Регион Steam",
+                            "description": "Географический регион для поиска в мастер-сервере Steam."
+                        },
+                        "SV_LOCATION": {
+                            "name": "Расположение сервера",
+                            "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения правильного флага в браузере серверов."
+                        },
+                        "SV_LOADINGURL": {
+                            "name": "URL экрана загрузки",
+                            "description": "Пользовательский URL экрана загрузки. Поддерживает %s (SteamID64) и %m (карта)."
+                        },
+                        "SV_DOWNLOADURL": {
+                            "name": "FastDL URL",
+                            "description": "HTTP(S) URL для FastDL для ускорения загрузки пользовательского контента."
+                        },
+                        "SRCDS_MAP": {
+                            "name": "Карта",
+                            "description": "Карта по умолчанию, загружаемая при запуске сервера. Убедитесь, что карта установлена или добавлена в Workshop."
+                        },
+                        "STEAM_GSLT": {
+                            "name": "Токен аккаунта Steam (GSLT)",
+                            "description": "Сгенерируйте его на странице: https://steamcommunity.com/dev/managegameservers (Используйте AppID 4000)."
+                        },
+                        "GAME_APPID": {
+                            "name": "AppID игры (Клиент)",
+                            "description": "AppID 4000 — идентификатор клиента Garry's Mod. Используется автогенераторами панели. Не изменяйте."
+                        },
+                        "SRCDS_APPID": {
+                            "name": "AppID Source (Сервер)",
+                            "description": "AppID 4020 используется SteamCMD для загрузки файлов сервера. Не изменяйте."
+                        },
+                        "WORKSHOP_ID": {
+                            "name": "ID Workshop",
+                            "description": "ID вашей коллекции Steam Workshop (числа в конце URL)."
+                        },
+                        "GAMEMODE": {
+                            "name": "Игровой режим (Gamemode)",
+                            "description": "Имя папки игрового режима по умолчанию (например, sandbox, darkrp, terrortown)."
+                        },
+                        "MAX_PLAYERS": {
+                            "name": "Максимум игроков",
+                            "description": "Максимальное количество игроков, разрешенное на сервере."
+                        },
+                        "TICKRATE": {
+                            "name": "Tickrate",
+                            "description": "Определяет количество обновлений сервера в секунду. По умолчанию 33. Более высокие значения сильно нагружают CPU."
+                        },
+                        "LUA_REFRESH": {
+                            "name": "Обновление Lua",
+                            "description": "1 для включения, 0 для отключения автообновления Lua (Отключайте в продакшене для экономии ресурсов)."
+                        }
+                    },
+                    "ports_config": {
+                        "client": {
+                            "name": "Клиентский порт",
+                            "description": "Порт, используемый игровым клиентом для подключения."
+                        },
+                        "primary": {
+                            "name": "Основной порт",
+                            "description": "Основной порт сервера, используемый для подключений и RCON."
+                        },
+                        "reserve": {
+                            "name": "Резервный порт",
+                            "description": "Резервный порт сервера, выделяемый на случай проблем с основным портом или вторичных служб."
+                        },
+                        "sourcetv": {
+                            "name": "Порт SourceTV",
+                            "description": "Порт, используемый для трансляции матчей через SourceTV."
+                        }
+                    },
+                    "name": "Garry's Mod",
+                    "description": "Garry's Mod — это культовая физическая песочница на базе движка Source. Она предлагает полную свободу действий без заданных целей: создавайте пропы, собирайте сложные механизмы и устанавливайте тысячи пользовательских аддонов, чтобы играть в такие режимы, как Sandbox, DarkRP, TTT или ваши собственные уникальные творения."
+                },
+                "uk": {
+                    "_meta_source": {
+                        "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
+                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser.",
+                        "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
+                        "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
+                        "var_SV_REGION": "The geographic region for the Steam master server browser.",
+                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+                        "var_SV_LOADINGURL": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
+                        "var_SV_DOWNLOADURL": "HTTP(S) URL for FastDL to speed up custom content downloads.",
+                        "var_SRCDS_MAP": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
+                        "var_STEAM_GSLT": "Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+                        "var_GAME_APPID": "AppID 4000 is the Garry's Mod client identifier. Used by panel auto-generators. Do not modify.",
+                        "var_SRCDS_APPID": "AppID 4020 is used by SteamCMD to download server files. Do not modify.",
+                        "var_WORKSHOP_ID": "The ID of your Steam Workshop collection (numbers at the end of the URL).",
+                        "var_GAMEMODE": "The default gamemode folder name (e.g., sandbox, darkrp, terrortown).",
+                        "var_MAX_PLAYERS": "The maximum number of players allowed on the server.",
+                        "var_TICKRATE": "Determines server updates per second. Default is 33. Higher values heavily load the CPU.",
+                        "var_LUA_REFRESH": "1 to enable, 0 to disable Lua autorefresh (Disable on production to save resources).",
+                        "port_client": "Port used by the game client to connect.",
+                        "port_primary": "Primary server port used for connections and RCON.",
+                        "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
+                        "port_sourcetv": "Port used for broadcasting matches via SourceTV."
+                    },
+                    "variables": {
+                        "SERVER_HOSTNAME": {
+                            "name": "Назва сервера",
+                            "description": "Публічна назва вашого сервера, яка відображається у браузері серверів."
+                        },
+                        "SERVER_PASSWORD": {
+                            "name": "Пароль сервера",
+                            "description": "Пароль для захисту сервера. Залиште порожнім для публічного сервера."
+                        },
+                        "RCON_PASSWORD": {
+                            "name": "RCON Пароль",
+                            "description": "Пароль, який використовується для віддаленого доступу до консолі. Залиште порожнім, щоб повністю вимкнути RCON (Рекомендується для безпеки)."
+                        },
+                        "SV_REGION": {
+                            "name": "Регіон Steam",
+                            "description": "Географічний регіон для головного браузера серверів Steam."
+                        },
+                        "SV_LOCATION": {
+                            "name": "Розташування сервера",
+                            "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення правильного прапора у браузері серверів."
+                        },
+                        "SV_LOADINGURL": {
+                            "name": "URL екрана завантаження",
+                            "description": "Користувацький URL екрана завантаження. Підтримує %s (SteamID64) та %m (мапа)."
+                        },
+                        "SV_DOWNLOADURL": {
+                            "name": "FastDL URL",
+                            "description": "HTTP(S) URL для FastDL для прискорення завантаження користувацького контенту."
+                        },
+                        "SRCDS_MAP": {
+                            "name": "Мапа",
+                            "description": "Мапа за замовчуванням, яка завантажується при запуску сервера. Переконайтеся, що мапа встановлена або включена в Workshop."
+                        },
+                        "STEAM_GSLT": {
+                            "name": "Токен акаунта Steam (GSLT)",
+                            "description": "Згенеруйте його на: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
+                        },
+                        "GAME_APPID": {
+                            "name": "AppID гри (клієнт)",
+                            "description": "AppID 4000 — це ідентифікатор клієнта Garry's Mod. Використовується автогенераторами панелі. Не змінюйте."
+                        },
+                        "SRCDS_APPID": {
+                            "name": "Source AppID (сервер)",
+                            "description": "AppID 4020 використовується SteamCMD для завантаження файлів сервера. Не змінюйте."
+                        },
+                        "WORKSHOP_ID": {
+                            "name": "ID Workshop",
+                            "description": "ID вашої колекції Steam Workshop (цифри в кінці URL)."
+                        },
+                        "GAMEMODE": {
+                            "name": "Режим гри",
+                            "description": "Назва папки режиму гри за замовчуванням (наприклад, sandbox, darkrp, terrortown)."
+                        },
+                        "MAX_PLAYERS": {
+                            "name": "Максимум гравців",
+                            "description": "Максимальна кількість гравців, дозволена на сервері."
+                        },
+                        "TICKRATE": {
+                            "name": "Tickrate",
+                            "description": "Визначає кількість оновлень сервера на секунду. За замовчуванням 33. Вищі значення сильно навантажують CPU."
+                        },
+                        "LUA_REFRESH": {
+                            "name": "Оновлення Lua",
+                            "description": "1 для увімкнення, 0 для вимкнення автооновлення Lua (Вимкніть на «продакшені» для економії ресурсів)."
+                        }
+                    },
+                    "ports_config": {
+                        "client": {
+                            "name": "Клієнтський порт",
+                            "description": "Порт, який використовується ігровим клієнтом для підключення."
+                        },
+                        "primary": {
+                            "name": "Основний порт",
+                            "description": "Основний порт сервера, який використовується для підключень та RCON."
+                        },
+                        "reserve": {
+                            "name": "Резервний порт",
+                            "description": "Резервний порт сервера, виділений на випадок проблем з основним портом або вторинних сервісів."
+                        },
+                        "sourcetv": {
+                            "name": "Порт SourceTV",
+                            "description": "Порт, який використовується для трансляції матчів через SourceTV."
+                        }
+                    },
+                    "name": "Garry's Mod",
+                    "description": "Garry's Mod — це неперевершена пісочниця з фізикою на базі рушія Source. Вона пропонує повну свободу без попередньо визначених цілей: створюйте пропи, збирайте складні механізми та встановлюйте тисячі спільнотних аддонів, щоб грати в кастомні режими на кшталт Sandbox, DarkRP, TTT або ваші власні унікальні витвори."
+                }
+            }
         }
     }
 }
