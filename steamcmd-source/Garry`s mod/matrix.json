@@ -54,6 +54,16 @@
             "ui_group": "general"
         },
         {
+            "name": "Server Tags",
+            "description": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces.",
+            "env_variable": "SV_TAGS",
+            "default_value": "sandbox,build,wiremod",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:255|regex:/^[a-zA-Z0-9_\\-]+(,[a-zA-Z0-9_\\-]+)*$/",
+            "ui_group": "general"
+       },
+        {
             "name": "Server Password",
             "description": "Password to protect the server. Leave empty for a public server.",
             "env_variable": "SERVER_PASSWORD",
@@ -87,9 +97,9 @@
         },
         {
             "name": "Server Location",
-            "description": "Two-letter country code (ISO 3166-1 alpha-2) to display the correct flag in the server browser.",
+            "description": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
             "env_variable": "SV_LOCATION",
-            "default_value": "ua",
+            "default_value": "XX",
             "user_viewable": true,
             "user_editable": true,
             "type": "select",
