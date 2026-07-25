@@ -3,7 +3,7 @@
     "name": "Garry's Mod",
     "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
     "author": "SGC-NOVUS Tech",
-    "icon_url": "https://raw.githubusercontent.com/SGC-NOVUS/matrices/main/steamcmd-source/Garry%60s%20mod/garrys_mod.webp",
+    "icon_url": "https://hub.sgc-novus.fun/steamcmd-source/Garry%60s%20mod/garrys_mod.webp",
     "type": "game",
     "slug": "GMOD",
     "run_image": "ghcr.io/sgc-novus/core-images:source",

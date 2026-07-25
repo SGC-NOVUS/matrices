@@ -502,8 +502,20 @@ ${sourceText}`;
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-        
+    <main class="flex-grow max-w-7xl mx-auto py-6 w-full">
+        <!-- Tabs Navigation -->
+        <div class="px-4 sm:px-6 lg:px-8 mb-8 border-b border-white/5">
+            <div class="flex space-x-8">
+                <button onclick="switchTab('matrices')" id="tab-matrices" class="border-b-2 border-novus-accent text-white pb-4 px-1 text-sm font-medium transition-colors">
+                    <i class="fas fa-gamepad mr-2 text-novus-accent"></i> <span data-i18n="matricesTab">Game Server Matrices</span>
+                </button>
+                <button onclick="switchTab('runtimes')" id="tab-runtimes" class="border-b-2 border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300 pb-4 px-1 text-sm font-medium transition-colors">
+                    <i class="fab fa-docker mr-2"></i> <span data-i18n="runtimesTab">Official Docker Runtimes</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="matrices-container" class="px-4 sm:px-6 lg:px-8">
         <!-- View: HOME -->
         <div id="view-home" class="view-section hidden">
             <div class="text-center mb-16">
@@ -598,6 +610,18 @@ ${sourceText}`;
             <div id="doc-content" class="glass-panel rounded-2xl p-8 markdown-body"></div>
         </div>
 
+        </div>
+        
+        <div id="runtimes-container" class="hidden px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4" data-i18n="runtimesTab">Official Docker Runtimes</h1>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto" data-i18n="runtimesDesc">Optimized base images for game servers.</p>
+            </div>
+            <div id="runtimes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="text-center col-span-full py-12 text-gray-500"><i class="fas fa-circle-notch fa-spin text-3xl mb-4 text-novus-accent"></i><br>Loading Runtimes...</div>
+            </div>
+        </div>
+
     </main>
 
     <!-- Footer -->
@@ -617,6 +641,7 @@ ${sourceText}`;
         let currentLang = stored || (data.langs.includes(browser) ? browser : 'en');
         if (!data.langs.includes(currentLang)) currentLang = 'en';
         
+        let currentTab = 'matrices';
         let currentView = 'home';
         let currentContext = null;
 
@@ -761,9 +786,79 @@ ${sourceText}`;
             }
 
             applyImageFallbacks();
+            renderRuntimes();
         }
 
-        document.addEventListener('DOMContentLoaded', render);
+        let runtimesData = null;
+        async function loadRuntimes() {
+            if (runtimesData) return renderRuntimes();
+            try {
+                const res = await fetch('https://raw.githubusercontent.com/SGC-NOVUS/runtimes/main/runtimes.json');
+                runtimesData = await res.json();
+                renderRuntimes();
+            } catch (e) {
+                document.getElementById('runtimes-grid').innerHTML = '<div class="text-center col-span-full text-red-400">Failed to load runtimes from GitHub.</div>';
+            }
+        }
+
+        function renderRuntimes() {
+            if (!runtimesData || currentTab !== 'runtimes') return;
+            let html = '';
+            runtimesData.forEach(rt => {
+                const locale = rt.locales[currentLang] || rt.locales.en || {};
+                let componentsHtml = rt.components ? rt.components.map(c => \`<span class="text-[10px] font-bold uppercase tracking-wider bg-white/10 text-gray-300 px-2 py-0.5 rounded">\${c}</span>\`).join(' ') : '';
+                html += \`
+                    <div class="glass-panel rounded-2xl p-6 game-card flex flex-col h-full">
+                        <div class="flex items-start gap-4 mb-4">
+                            <img data-primary="\${rt.iconUrl}" data-fallback="\${rt.fallbackIconUrl}" class="lazy-fallback h-14 w-14 rounded-xl shadow-md border border-white/5 bg-white/5">
+                            <div>
+                                <h3 class="text-lg font-bold leading-tight mb-2">\${locale.name || rt.id}</h3>
+                                <div class="flex flex-wrap gap-1">\${componentsHtml}</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm flex-grow mb-6 line-clamp-4">\${locale.description || ''}</p>
+                        <div class="mt-auto">
+                            <div class="bg-black/40 border border-white/10 rounded-lg flex items-center overflow-hidden">
+                                <code class="px-3 py-2 text-[11px] text-gray-300 flex-grow font-mono truncate">\${rt.pullCmd}</code>
+                                <button onclick="navigator.clipboard.writeText('\${rt.pullCmd}'); this.innerHTML='<i class=\\'fas fa-check\\'></i>'; setTimeout(() => this.innerHTML='<i class=\\'fas fa-copy\\'></i>', 2000)" class="bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-4 py-2 transition-colors border-l border-white/10 flex-shrink-0">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>\`;
+            });
+            document.getElementById('runtimes-grid').innerHTML = html;
+            applyImageFallbacks();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-matrices').className = tab === 'matrices' 
+                ? 'border-b-2 border-novus-accent text-white pb-4 px-1 text-sm font-medium transition-colors' 
+                : 'border-b-2 border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300 pb-4 px-1 text-sm font-medium transition-colors';
+                
+            document.getElementById('tab-runtimes').className = tab === 'runtimes' 
+                ? 'border-b-2 border-novus-accent text-white pb-4 px-1 text-sm font-medium transition-colors' 
+                : 'border-b-2 border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300 pb-4 px-1 text-sm font-medium transition-colors';
+                
+            if (tab === 'matrices') {
+                document.getElementById('matrices-container').classList.remove('hidden');
+                document.getElementById('runtimes-container').classList.add('hidden');
+            } else {
+                document.getElementById('matrices-container').classList.add('hidden');
+                document.getElementById('runtimes-container').classList.remove('hidden');
+                loadRuntimes();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            render();
+            // Preload runtimes in background
+            fetch('https://raw.githubusercontent.com/SGC-NOVUS/runtimes/main/runtimes.json')
+                .then(r => r.json())
+                .then(data => { runtimesData = data; })
+                .catch(e => console.warn('Failed to preload runtimes'));
+        });
     </script>
 </body>
 </html>`;
