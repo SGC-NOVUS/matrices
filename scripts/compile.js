@@ -19,6 +19,10 @@ const model = genAI.getGenerativeModel({
     model: 'gemini-3.5-flash-lite',
     generationConfig: { responseMimeType: "application/json" }
 });
+const textModel = genAI.getGenerativeModel({ 
+    model: 'gemini-3.5-flash-lite',
+    generationConfig: { responseMimeType: "text/plain" }
+});
 
 const HEADERS = {
     en: { 
@@ -241,32 +245,22 @@ async function main() {
                 siteData.docs[lang][docKey] = cache.docs[lang][docFile].text;
             } else {
                 console.log(`[INFO] [${lang}] Translating ${docFile}...`);
-                const prompt = `You are a professional translator. Translate the following Markdown document to language code "${lang}". 
-CRITICAL INSTRUCTIONS:
-1. Preserve ALL markdown formatting, headers, lists, URLs, and code blocks exactly.
-2. DO NOT wrap the result in JSON. DO NOT return {"translation": "..."}.
-3. Return ONLY the raw, plain translated markdown text.
+                const prompt = `You are a professional IT translator. Translate the following Markdown document to language code "${lang}". 
+Preserve ALL markdown formatting, headers, lists, URLs, and code blocks exactly.
+Return ONLY the raw translated markdown text. Do NOT wrap in markdown code blocks.
 
 Original text:
 ${sourceText}`;
                 try {
-                    const result = await model.generateContent(prompt);
+                    const result = await textModel.generateContent(prompt);
                     let text = result.response.text().trim();
                     if (text.startsWith('```markdown')) text = text.replace(/^```markdown/i, '').replace(/```$/, '').trim();
                     else if (text.startsWith('```')) text = text.replace(/^```/, '').replace(/```$/, '').trim();
                     
-                    if (text.startsWith('{') && text.endsWith('}')) {
-                        try {
-                            const parsed = JSON.parse(text);
-                            const keys = Object.keys(parsed);
-                            if (keys.length > 0) text = parsed[keys[0]];
-                            text = text.replace(/\\n/g, '\n');
-                        } catch(e) {}
-                    }
-                    
                     cache.docs[lang][docFile] = { hash: sourceHash, text };
                     siteData.docs[lang][docKey] = text;
                 } catch(e) {
+                    console.error(`[ERROR] Markdown translation failed for ${docFile} [${lang}]:`, e.message);
                     siteData.docs[lang][docKey] = sourceText;
                 }
             }
