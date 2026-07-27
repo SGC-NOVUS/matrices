@@ -55,12 +55,12 @@
         },
         {
             "name": "Server Tags",
-            "description": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces.",
+            "description": "Comma-separated keywords to help players find your server in search. Any language is supported. No spaces allowed.",
             "env_variable": "SV_TAGS",
             "default_value": "sandbox,build,wiremod",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string|max:255|regex:/^[a-zA-Z0-9_\\-]+(,[a-zA-Z0-9_\\-]+)*$/",
+            "rules": "nullable|string|max:255|regex:/^[^,\\s]+(,[^,\\s]+)*$/u",
             "ui_group": "general"
         },
         {
@@ -92,7 +92,7 @@
             "user_editable": true,
             "type": "select",
             "options_source": "steam_regions",
-            "rules": "required|integer",
+            "rules": "required|integer|min:0|max:255",
             "ui_group": "general"
         },
         {
@@ -104,7 +104,7 @@
             "user_editable": true,
             "type": "select",
             "options_source": "countries_iso2",
-            "rules": "required|string|size:2",
+            "rules": "required|string|size:2|alpha",
             "ui_group": "general"
         },
         {
@@ -114,7 +114,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string",
+            "rules": "nullable|string|url|max:255",
             "ui_group": "gameplay"
         },
         {
@@ -124,7 +124,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|string",
+            "rules": "nullable|string|url|max:255",
             "ui_group": "security"
         },
         {
@@ -134,7 +134,7 @@
             "default_value": "gm_flatgrass",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|alpha_dash",
+            "rules": "required|string|alpha_dash|max:128",
             "ui_group": "gameplay"
         },
         {
@@ -172,7 +172,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|numeric",
+            "rules": "nullable|integer|min:1",
             "ui_group": "gameplay"
         },
         {
@@ -182,7 +182,7 @@
             "default_value": "sandbox",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|alpha_dash",
+            "rules": "required|string|alpha_dash|max:64",
             "ui_group": "gameplay"
         },
         {
@@ -192,7 +192,7 @@
             "default_value": "32",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|integer|max:128",
+            "rules": "required|integer|min:1|max:128",
             "ui_group": "gameplay"
         },
         {
@@ -202,7 +202,7 @@
             "default_value": "33",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|integer|max:100",
+            "rules": "required|integer|min:11|max:100",
             "ui_group": "gameplay"
         },
         {
@@ -285,7 +285,7 @@
                 },
                 "SV_TAGS": {
                     "name": "Теги сервера",
-                    "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Укажите игровые режимы, темы или популярные установленные аддоны (например: sandbox,build,rp,wire,sbep). Не используйте пробелы."
+                    "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Поддерживается любой язык. Пробелы не допускаются."
                 }
             },
             "ports_config": {
@@ -377,7 +377,7 @@
                 },
                 "SV_TAGS": {
                     "name": "Теги сервера",
-                    "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Вкажіть ігрові режими, теми або популярні встановлені аддони (наприклад, sandbox,build,rp,wire,sbep). Не використовуйте пробіли."
+                    "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Підтримується будь-яка мова. Пробіли не допускаються."
                 }
             },
             "ports_config": {

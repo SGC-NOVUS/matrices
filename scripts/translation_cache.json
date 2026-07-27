@@ -133,7 +133,7 @@
                         "port_primary": "Primary server port used for connections and RCON.",
                         "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
                         "port_sourcetv": "Port used for broadcasting matches via SourceTV.",
-                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces."
+                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Any language is supported. No spaces allowed."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
@@ -202,7 +202,7 @@
                         },
                         "SV_TAGS": {
                             "name": "Теги сервера",
-                            "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Укажите игровые режимы, темы или популярные установленные аддоны (например: sandbox,build,rp,wire,sbep). Не используйте пробелы."
+                            "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Поддерживается любой язык. Пробелы не допускаются."
                         }
                     },
                     "ports_config": {
@@ -249,7 +249,7 @@
                         "port_primary": "Primary server port used for connections and RCON.",
                         "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
                         "port_sourcetv": "Port used for broadcasting matches via SourceTV.",
-                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Specify game modes, themes, or popular installed addons (e.g. sandbox,build,rp,wire,sbep). Do not use spaces."
+                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Any language is supported. No spaces allowed."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
@@ -318,7 +318,7 @@
                         },
                         "SV_TAGS": {
                             "name": "Теги сервера",
-                            "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Вкажіть ігрові режими, теми або популярні встановлені аддони (наприклад, sandbox,build,rp,wire,sbep). Не використовуйте пробіли."
+                            "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Підтримується будь-яка мова. Пробіли не допускаються."
                         }
                     },
                     "ports_config": {
