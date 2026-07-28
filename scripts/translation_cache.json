@@ -112,235 +112,245 @@
             "Garry`s mod": {
                 "ru": {
                     "_meta_source": {
-                        "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
-                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser. Note that due to technical limitations of the Garry's Mod engine, the display name is capped at 63 characters. While you can adjust this length limit within the variable matrix configuration parameters if necessary, please keep in mind that any characters exceeding this limit will be truncated by the game engine.",
-                        "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
-                        "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
-                        "var_SV_REGION": "The geographic region for the Steam master server browser.",
-                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
-                        "var_SV_LOADINGURL": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
-                        "var_SV_DOWNLOADURL": "HTTP(S) URL for FastDL to speed up custom content downloads.",
-                        "var_SRCDS_MAP": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
-                        "var_STEAM_GSLT": "Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
-                        "var_GAME_APPID": "AppID 4000 is the Garry's Mod client identifier. Used by panel auto-generators. Do not modify.",
-                        "var_SRCDS_APPID": "AppID 4020 is used by SteamCMD to download server files. Do not modify.",
-                        "var_WORKSHOP_ID": "The ID of your Steam Workshop collection (numbers at the end of the URL).",
-                        "var_GAMEMODE": "The default gamemode folder name (e.g., sandbox, darkrp, terrortown).",
-                        "var_MAX_PLAYERS": "The maximum number of players allowed on the server.",
-                        "var_TICKRATE": "Determines server updates per second. Default is 33. Higher values heavily load the CPU.",
-                        "var_LUA_REFRESH": "1 to enable, 0 to disable Lua autorefresh (Disable on production to save resources).",
-                        "port_client": "Port used by the game client to connect.",
-                        "port_primary": "Primary server port used for connections and RCON.",
-                        "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
-                        "port_sourcetv": "Port used for broadcasting matches via SourceTV.",
-                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Any language is supported. No spaces allowed."
+                        "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons.",
+                        "var_SERVER_HOSTNAME": "The public display name of your server in the Steam server browser. Note: The Source engine strictly truncates hostnames exceeding 63 characters. Keep it concise and impactful.",
+                        "var_SERVER_PASSWORD": "The authentication password required for players to join. Leave this field completely empty to operate a public server accessible to everyone.",
+                        "var_RCON_PASSWORD": "The cryptographic passphrase used for remote console (RCON) administration. For maximum security, leave this empty to permanently disable RCON if you manage permissions via in-game mods (like ULX/SAM/NovusAdmin).",
+                        "var_SV_REGION": "Designates the geographic region for Steam master server routing. This affects how your server is categorized in the global browser (e.g., 0=US East, 1=US West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa, 255=World).",
+                        "var_SV_LOCATION": "The two-letter ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'UA') used to display the correct national flag next to your server. Defaults to 'XX' for International.",
+                        "var_SV_LOADINGURL": "A custom HTTP/HTTPS web endpoint displayed while players connect. You can inject dynamic variables like '%s' (Player SteamID64) and '%m' (Current Map) to personalize the loading experience.",
+                        "var_SV_DOWNLOADURL": "The HTTP/HTTPS FastDL (Fast Download) endpoint. Drastically accelerates custom content (models, materials, sounds) delivery to clients by bypassing the slow native Source engine transfers.",
+                        "var_SRCDS_MAP": "The initial map loaded upon server startup (e.g., 'gm_flatgrass', 'rp_downtown_v4c_v2'). Ensure the respective map file is either mounted via the Steam Workshop or physically present in your 'garrysmod/maps/' directory.",
+                        "var_STEAM_GSLT": "Your Game Server Login Token (GSLT). Mandatory for anonymous players to connect and for proper Steam ranking. Generate this at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+                        "var_GAME_APPID": "AppID 4000 is the Garry's Mod client identifier. Used securely by internal panel auto-generators. Do not modify.",
+                        "var_SRCDS_APPID": "AppID 4020 is used by SteamCMD to download necessary server depot files. Do not modify.",
+                        "var_WORKSHOP_ID": "The numerical ID of your public Steam Workshop Collection. The server will automatically synchronize and mount all addons within this collection on boot. Extract the numbers from the end of your collection's URL.",
+                        "var_GAMEMODE": "The foundational gamemode loaded by the engine. Must exactly match the gamemode's folder name in 'garrysmod/gamemodes/' (e.g., 'sandbox', 'darkrp', 'terrortown').",
+                        "var_MAX_PLAYERS": "The absolute maximum concurrent player slots. Be mindful of your hardware capabilities; Garry's Mod physics are heavily CPU-bound. The hard limit encoded by the engine is 128.",
+                        "var_TICKRATE": "The simulation frequency (Ticks Per Second) of the server. 33 is the optimal gold standard for Garry's Mod. Higher values exponentially increase CPU load and network bandwidth overhead.",
+                        "var_LUA_REFRESH": "Toggles the Auto-Refresh subsystem for Lua scripts. Set to enabled (1) for active development. In production environments, set to disabled (0) to eliminate background disk I/O polling and conserve server resources.",
+                        "port_client": "The primary port utilized by game clients to establish connections with your server.",
+                        "port_primary": "The core server port responsible for general connections, queries, and RCON administration.",
+                        "port_reserve": "A secondary fallback port automatically allocated if the primary port encounters binding conflicts.",
+                        "port_sourcetv": "The broadcast port dedicated to SourceTV spectator streaming and match recording.",
+                        "var_SV_TAGS": "Comma-separated keywords to optimize your server's visibility in the in-game search engine (e.g., 'sandbox,rp,wiremod'). Spaces are strictly prohibited. Supports multiple languages.",
+                        "var_SERVER_ARCH": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
                             "name": "Имя сервера",
-                            "description": "Публичное имя вашего сервера, отображаемое в браузере серверов. Обратите внимание, что из-за технических ограничений движка Garry's Mod отображаемое имя ограничено 63 символами. Хотя при необходимости вы можете изменить этот лимит длины в конфигурационных параметрах матричной переменной, учтите, что любые символы, превышающие этот лимит, будут обрезаны игровым движком."
+                            "description": "Публичное отображаемое имя вашего сервера в браузере серверов Steam. Примечание: движок Source строго обрезает названия, превышающие 63 символа. Делайте их лаконичными и выразительными."
                         },
                         "SERVER_PASSWORD": {
                             "name": "Пароль сервера",
-                            "description": "Пароль для защиты сервера. Оставьте пустым для публичного сервера."
+                            "description": "Пароль аутентификации, необходимый игрокам для подключения. Оставьте это поле полностью пустым, чтобы запустить публичный сервер, доступный для всех."
                         },
                         "RCON_PASSWORD": {
                             "name": "RCON Пароль",
-                            "description": "Пароль, используемый для доступа к удаленной консоли. Оставьте пустым, чтобы полностью отключить RCON (Рекомендуется в целях безопасности)."
+                            "description": "Криптографическая фраза-пароль, используемая для администрирования через удаленную консоль (RCON). Для максимальной безопасности оставьте это поле пустым, чтобы навсегда отключить RCON, если вы управляете правами через внутриигровые моды (такие как ULX/SAM/NovusAdmin)."
                         },
                         "SV_REGION": {
                             "name": "Регион Steam",
-                            "description": "Географический регион для браузера мастер-серверов Steam."
+                            "description": "Определяет географический регион для маршрутизации мастер-сервера Steam. Это влияет на то, в какой категории ваш сервер отображается в глобальном браузере (например, 0=Восток США, 1=Запад США, 2=Южная Америка, 3=Европа, 4=Азия, 5=Австралия, 6=Ближний Восток, 7=Африка, 255=Весь мир)."
                         },
                         "SV_LOCATION": {
                             "name": "Расположение сервера",
-                            "description": "Двухбуквенный код страны (ISO 3166-1 alpha-2) для отображения флага в браузере серверов. По умолчанию установлено значение 'XX' для международного/всемирного расположения."
+                            "description": "Двухбуквенный код страны по стандарту ISO 3166-1 alpha-2 (например, 'US', 'DE', 'UA'), используемый для отображения правильного национального флага рядом с вашим сервером. По умолчанию используется 'XX' для интернационального."
                         },
                         "SV_LOADINGURL": {
                             "name": "URL экрана загрузки",
-                            "description": "URL пользовательского экрана загрузки. Поддерживает %s (SteamID64) и %m (карта)."
+                            "description": "Пользовательская веб-страница HTTP/HTTPS, отображаемая во время подключения игроков. Вы можете внедрять динамические переменные, такие как '%s' (SteamID64 игрока) и '%m' (текущая карта), чтобы персонализировать процесс загрузки."
                         },
                         "SV_DOWNLOADURL": {
                             "name": "FastDL URL",
-                            "description": "HTTP(S) ссылка для FastDL, ускоряющая загрузку пользовательского контента."
+                            "description": "Адрес конечной точки HTTP/HTTPS FastDL (быстрая загрузка). Значительно ускоряет передачу пользовательского контента (моделей, материалов, звуков) клиентам за счет обхода медленной нативной передачи движка Source."
                         },
                         "SRCDS_MAP": {
                             "name": "Карта",
-                            "description": "Карта по умолчанию, загружаемая при запуске сервера. Убедитесь, что карта установлена или добавлена в Workshop."
+                            "description": "Начальная карта, загружаемая при запуске сервера (например, 'gm_flatgrass', 'rp_downtown_v4c_v2'). Убедитесь, что соответствующий файл карты либо подключен через мастерскую Steam, либо физически присутствует в вашей директории 'garrysmod/maps/'."
                         },
                         "STEAM_GSLT": {
                             "name": "Токен аккаунта Steam (GSLT)",
-                            "description": "Сгенерируйте его по адресу: https://steamcommunity.com/dev/managegameservers (Используйте AppID 4000)."
+                            "description": "Ваш токен входа игрового сервера (GSLT). Обязателен для подключения анонимных игроков и корректного ранжирования в Steam. Сгенерируйте его здесь: https://steamcommunity.com/dev/managegameservers (используйте AppID 4000)."
                         },
                         "GAME_APPID": {
-                            "name": "Game AppID (Клиент)",
-                            "description": "AppID 4000 — это идентификатор клиента Garry's Mod. Используется автогенераторами панели. Не изменяйте."
+                            "name": "AppID игры (Клиент)",
+                            "description": "AppID 4000 — это идентификатор клиента Garry's Mod. Безопасно используется внутренними автогенераторами панели. Не изменяйте."
                         },
                         "SRCDS_APPID": {
-                            "name": "Source AppID (Сервер)",
-                            "description": "AppID 4020 используется SteamCMD для загрузки файлов сервера. Не изменяйте."
+                            "name": "AppID Source (Сервер)",
+                            "description": "AppID 4020 используется SteamCMD для загрузки необходимых файлов депо сервера. Не изменяйте."
                         },
                         "WORKSHOP_ID": {
                             "name": "ID Мастерской",
-                            "description": "ID вашей коллекции в Steam Workshop (цифры в конце ссылки)."
+                            "description": "Числовой идентификатор вашей публичной коллекции в Мастерской Steam. Сервер автоматически синхронизирует и подключит все аддоны из этой коллекции при загрузке. Извлеките цифры из конца URL вашей коллекции."
                         },
                         "GAMEMODE": {
-                            "name": "Режим игры (Gamemode)",
-                            "description": "Имя папки режима игры по умолчанию (например, sandbox, darkrp, terrortown)."
+                            "name": "Игровой режим",
+                            "description": "Базовый игровой режим, загружаемый движком. Должен точно соответствовать названию папки игрового режима в 'garrysmod/gamemodes/' (например, 'sandbox', 'darkrp', 'terrortown')."
                         },
                         "MAX_PLAYERS": {
                             "name": "Максимум игроков",
-                            "description": "Максимальное количество игроков, разрешенное на сервере."
+                            "description": "Абсолютный максимум одновременно играющих пользователей. Учитывайте возможности вашего оборудования; физика в Garry's Mod сильно нагружает процессор. Жесткий лимит, заложенный в движке, составляет 128."
                         },
                         "TICKRATE": {
                             "name": "Tickrate",
-                            "description": "Определяет количество обновлений сервера в секунду. По умолчанию 33. Более высокие значения сильно нагружают CPU."
+                            "description": "Частота симуляции (тактов в секунду) сервера. 33 — это оптимальный золотой стандарт для Garry's Mod. Более высокие значения экспоненциально увеличивают нагрузку на процессор и сетевой трафик."
                         },
                         "LUA_REFRESH": {
                             "name": "Обновление Lua",
-                            "description": "1 для включения, 0 для отключения автообновления Lua (Отключайте на продакшене для экономии ресурсов)."
+                            "description": "Включает подсистему автообновления для Lua-скриптов. Установите значение «включено» (1) для активной разработки. В продакшн-окружении установите значение «отключено» (0), чтобы исключить фоновый опрос ввода-вывода диска и сберечь ресурсы сервера."
                         },
                         "SV_TAGS": {
                             "name": "Теги сервера",
-                            "description": "Ключевые слова через запятую, помогающие игрокам найти ваш сервер в поиске. Поддерживается любой язык. Пробелы не допускаются."
+                            "description": "Ключевые слова через запятую для оптимизации видимости вашего сервера во внутриигровом поисковике (например, 'sandbox,rp,wiremod'). Использование пробелов строго запрещено. Поддерживается несколько языков."
+                        },
+                        "SERVER_ARCH": {
+                            "name": "Архитектура сервера",
+                            "description": "Выберите бинарную архитектуру для игрового движка. Мы настоятельно рекомендуем ветку '64' (x86-64) для продакшн-серверов, чтобы обойти устаревшее ограничение в 4 ГБ ОЗУ и значительно повысить производительность. Используйте '32' только в том случае, если этого требуют специфические старые аддоны."
                         }
                     },
                     "ports_config": {
                         "client": {
-                            "name": "Порт клиента",
-                            "description": "Порт, используемый игровым клиентом для подключения."
+                            "name": "Клиентский порт",
+                            "description": "Основной порт, используемый игровыми клиентами для установления соединения с вашим сервером."
                         },
                         "primary": {
                             "name": "Основной порт",
-                            "description": "Основной порт сервера, используемый для подключений и RCON."
+                            "description": "Главный порт сервера, отвечающий за общие подключения, запросы и RCON-администрирование."
                         },
                         "reserve": {
                             "name": "Резервный порт",
-                            "description": "Резервный порт сервера, выделяемый на случай проблем с основным портом или для вторичных служб."
+                            "description": "Вторичный резервный порт, автоматически выделяемый в случае конфликтов привязки основного порта."
                         },
                         "sourcetv": {
                             "name": "Порт SourceTV",
-                            "description": "Порт, используемый для трансляции матчей через SourceTV."
+                            "description": "Порт вещания, выделенный для стриминга наблюдателей SourceTV и записи матчей."
                         }
                     },
                     "name": "Garry's Mod",
-                    "description": "Garry's Mod — это культовая физическая песочница на базе движка Source. Она предлагает полную свободу без заранее заданных целей: создавайте пропсы, стройте сложные механизмы и устанавливайте тысячи пользовательских аддонов, чтобы играть в такие режимы, как Sandbox, DarkRP, TTT или ваши собственные уникальные творения."
+                    "description": "Garry's Mod — это лучший физический песочница на базе движка Source. Она предлагает абсолютную свободу без заранее определенных целей: спавните проппы, стройте сложные механизмы и устанавливайте тысячи пользовательских аддонов из сообщества."
                 },
                 "uk": {
                     "_meta_source": {
-                        "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
-                        "var_SERVER_HOSTNAME": "The public name of your server displayed in the server browser. Note that due to technical limitations of the Garry's Mod engine, the display name is capped at 63 characters. While you can adjust this length limit within the variable matrix configuration parameters if necessary, please keep in mind that any characters exceeding this limit will be truncated by the game engine.",
-                        "var_SERVER_PASSWORD": "Password to protect the server. Leave empty for a public server.",
-                        "var_RCON_PASSWORD": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
-                        "var_SV_REGION": "The geographic region for the Steam master server browser.",
-                        "var_SV_LOCATION": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
-                        "var_SV_LOADINGURL": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
-                        "var_SV_DOWNLOADURL": "HTTP(S) URL for FastDL to speed up custom content downloads.",
-                        "var_SRCDS_MAP": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
-                        "var_STEAM_GSLT": "Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
-                        "var_GAME_APPID": "AppID 4000 is the Garry's Mod client identifier. Used by panel auto-generators. Do not modify.",
-                        "var_SRCDS_APPID": "AppID 4020 is used by SteamCMD to download server files. Do not modify.",
-                        "var_WORKSHOP_ID": "The ID of your Steam Workshop collection (numbers at the end of the URL).",
-                        "var_GAMEMODE": "The default gamemode folder name (e.g., sandbox, darkrp, terrortown).",
-                        "var_MAX_PLAYERS": "The maximum number of players allowed on the server.",
-                        "var_TICKRATE": "Determines server updates per second. Default is 33. Higher values heavily load the CPU.",
-                        "var_LUA_REFRESH": "1 to enable, 0 to disable Lua autorefresh (Disable on production to save resources).",
-                        "port_client": "Port used by the game client to connect.",
-                        "port_primary": "Primary server port used for connections and RCON.",
-                        "port_reserve": "Reserve server port allocated in case of primary port issues or secondary services.",
-                        "port_sourcetv": "Port used for broadcasting matches via SourceTV.",
-                        "var_SV_TAGS": "Comma-separated keywords to help players find your server in search. Any language is supported. No spaces allowed."
+                        "root_desc": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons.",
+                        "var_SERVER_HOSTNAME": "The public display name of your server in the Steam server browser. Note: The Source engine strictly truncates hostnames exceeding 63 characters. Keep it concise and impactful.",
+                        "var_SERVER_PASSWORD": "The authentication password required for players to join. Leave this field completely empty to operate a public server accessible to everyone.",
+                        "var_RCON_PASSWORD": "The cryptographic passphrase used for remote console (RCON) administration. For maximum security, leave this empty to permanently disable RCON if you manage permissions via in-game mods (like ULX/SAM/NovusAdmin).",
+                        "var_SV_REGION": "Designates the geographic region for Steam master server routing. This affects how your server is categorized in the global browser (e.g., 0=US East, 1=US West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa, 255=World).",
+                        "var_SV_LOCATION": "The two-letter ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'UA') used to display the correct national flag next to your server. Defaults to 'XX' for International.",
+                        "var_SV_LOADINGURL": "A custom HTTP/HTTPS web endpoint displayed while players connect. You can inject dynamic variables like '%s' (Player SteamID64) and '%m' (Current Map) to personalize the loading experience.",
+                        "var_SV_DOWNLOADURL": "The HTTP/HTTPS FastDL (Fast Download) endpoint. Drastically accelerates custom content (models, materials, sounds) delivery to clients by bypassing the slow native Source engine transfers.",
+                        "var_SRCDS_MAP": "The initial map loaded upon server startup (e.g., 'gm_flatgrass', 'rp_downtown_v4c_v2'). Ensure the respective map file is either mounted via the Steam Workshop or physically present in your 'garrysmod/maps/' directory.",
+                        "var_STEAM_GSLT": "Your Game Server Login Token (GSLT). Mandatory for anonymous players to connect and for proper Steam ranking. Generate this at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+                        "var_GAME_APPID": "AppID 4000 is the Garry's Mod client identifier. Used securely by internal panel auto-generators. Do not modify.",
+                        "var_SRCDS_APPID": "AppID 4020 is used by SteamCMD to download necessary server depot files. Do not modify.",
+                        "var_WORKSHOP_ID": "The numerical ID of your public Steam Workshop Collection. The server will automatically synchronize and mount all addons within this collection on boot. Extract the numbers from the end of your collection's URL.",
+                        "var_GAMEMODE": "The foundational gamemode loaded by the engine. Must exactly match the gamemode's folder name in 'garrysmod/gamemodes/' (e.g., 'sandbox', 'darkrp', 'terrortown').",
+                        "var_MAX_PLAYERS": "The absolute maximum concurrent player slots. Be mindful of your hardware capabilities; Garry's Mod physics are heavily CPU-bound. The hard limit encoded by the engine is 128.",
+                        "var_TICKRATE": "The simulation frequency (Ticks Per Second) of the server. 33 is the optimal gold standard for Garry's Mod. Higher values exponentially increase CPU load and network bandwidth overhead.",
+                        "var_LUA_REFRESH": "Toggles the Auto-Refresh subsystem for Lua scripts. Set to enabled (1) for active development. In production environments, set to disabled (0) to eliminate background disk I/O polling and conserve server resources.",
+                        "port_client": "The primary port utilized by game clients to establish connections with your server.",
+                        "port_primary": "The core server port responsible for general connections, queries, and RCON administration.",
+                        "port_reserve": "A secondary fallback port automatically allocated if the primary port encounters binding conflicts.",
+                        "port_sourcetv": "The broadcast port dedicated to SourceTV spectator streaming and match recording.",
+                        "var_SV_TAGS": "Comma-separated keywords to optimize your server's visibility in the in-game search engine (e.g., 'sandbox,rp,wiremod'). Spaces are strictly prohibited. Supports multiple languages.",
+                        "var_SERVER_ARCH": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
-                            "name": "Ім'я сервера",
-                            "description": "Публічна назва вашого сервера, яка відображається в браузері серверів. Зауважте, що через технічні обмеження рушія Garry's Mod відображуване ім'я обмежене 63 символами. Хоча ви можете налаштувати цей ліміт довжини в параметрах конфігурації матриці змінних, якщо це необхідно, будь ласка, майте на увазі, що будь-які символи, що перевищують цей ліміт, будуть обрізані ігровим рушієм."
+                            "name": "Назва сервера",
+                            "description": "Публічна назва вашого сервера в браузері серверів Steam. Примітка: рушій Source суворо обрізає назви, що перевищують 63 символи. Зробіть її лаконічною та виразною."
                         },
                         "SERVER_PASSWORD": {
                             "name": "Пароль сервера",
-                            "description": "Пароль для захисту сервера. Залиште порожнім для публічного сервера."
+                            "description": "Пароль автентифікації, необхідний для підключення гравців. Залиште це поле повністю порожнім, щоб запустити публічний сервер, доступний кожному."
                         },
                         "RCON_PASSWORD": {
                             "name": "RCON Пароль",
-                            "description": "Пароль, який використовується для віддаленого доступу до консолі. Залиште порожнім, щоб повністю вимкнути RCON (Рекомендується з міркувань безпеки)."
+                            "description": "Криптографічний пароль, який використовується для адміністрування через віддалену консоль (RCON). Для максимальної безпеки залиште його порожнім, щоб назавжди вимкнути RCON, якщо ви керуєте правами доступу через ігрові моди (такі як ULX/SAM/NovusAdmin)."
                         },
                         "SV_REGION": {
                             "name": "Регіон Steam",
-                            "description": "Географічний регіон для головного браузера серверів Steam."
+                            "description": "Визначає географічний регіон для маршрутизації головного сервера Steam. Це впливає на те, як ваш сервер класифікується у глобальному браузері (наприклад, 0=Схід США, 1=Захід США, 2=Південна Америка, 3=Європа, 4=Азія, 5=Австралія, 6=Близький Схід, 7=Африка, 255=Світ)."
                         },
                         "SV_LOCATION": {
                             "name": "Розташування сервера",
-                            "description": "Дволітерний код країни (ISO 3166-1 alpha-2) для відображення прапора в браузері серверів. За замовчуванням 'XX' для міжнародного/світового розташування."
+                            "description": "Дволітерний код країни за стандартом ISO 3166-1 alpha-2 (наприклад, 'US', 'DE', 'UA'), який використовується для відображення правильного національного прапора поруч із вашим сервером. За замовчуванням встановлено 'XX' для міжнародного."
                         },
                         "SV_LOADINGURL": {
                             "name": "URL екрана завантаження",
-                            "description": "URL-адреса кастомного екрана завантаження. Підтримує %s (SteamID64) та %m (мапа)."
+                            "description": "Користувацька веб-адреса HTTP/HTTPS, яка відображається під час підключення гравців. Ви можете вставляти динамічні змінні, такі як '%s' (SteamID64 гравця) та '%m' (Поточна мапа), щоб персоналізувати процес завантаження."
                         },
                         "SV_DOWNLOADURL": {
                             "name": "FastDL URL",
-                            "description": "HTTP(S) URL для FastDL для прискорення завантаження кастомного контенту."
+                            "description": "Кінцева точка HTTP/HTTPS FastDL (швидке завантаження). Значно прискорює доставку користувацького контенту (моделей, матеріалів, звуків) клієнтам шляхом обходу повільної нативної передачі даних рушія Source."
                         },
                         "SRCDS_MAP": {
                             "name": "Мапа",
-                            "description": "Мапа за замовчуванням, яка завантажується під час запуску сервера. Переконайтеся, що мапа встановлена або включена у Workshop."
+                            "description": "Початкова мапа, яка завантажується при запуску сервера (наприклад, 'gm_flatgrass', 'rp_downtown_v4c_v2'). Переконайтеся, що відповідний файл мапи змонтовано через майстерню Steam або він фізично присутній у вашій директорії 'garrysmod/maps/'."
                         },
                         "STEAM_GSLT": {
-                            "name": "Токен облікового запису Steam (GSLT)",
-                            "description": "Згенеруйте його за адресою: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
+                            "name": "Токен акаунта Steam (GSLT)",
+                            "description": "Ваш токен для входу на ігровий сервер (GSLT). Обов'язковий для підключення анонімних гравців та для правильного рейтингу Steam. Згенеруйте його на: https://steamcommunity.com/dev/managegameservers (Використовуйте AppID 4000)."
                         },
                         "GAME_APPID": {
-                            "name": "Ігровий AppID (Клієнт)",
-                            "description": "AppID 4000 — це ідентифікатор клієнта Garry's Mod. Використовується автогенераторами панелі. Не змінюйте."
+                            "name": "AppID гри (Клієнт)",
+                            "description": "AppID 4000 — це ідентифікатор клієнта Garry's Mod. Безпечно використовується внутрішніми автогенераторами панелі. Не змінюйте."
                         },
                         "SRCDS_APPID": {
-                            "name": "Source AppID (Сервер)",
-                            "description": "AppID 4020 використовується SteamCMD для завантаження файлів сервера. Не змінюйте."
+                            "name": "AppID Source (Сервер)",
+                            "description": "AppID 4020 використовується SteamCMD для завантаження необхідних файлів сервера. Не змінюйте."
                         },
                         "WORKSHOP_ID": {
-                            "name": "Workshop ID",
-                            "description": "Ідентифікатор вашої колекції Steam Workshop (цифри в кінці URL)."
+                            "name": "ID Workshop",
+                            "description": "Числовий ID вашої публічної колекції Steam Workshop. Сервер автоматично синхронізує та встановить усі аддони з цієї колекції під час завантаження. Скопіюйте цифри з кінця URL-адреси вашої колекції."
                         },
                         "GAMEMODE": {
-                            "name": "Ігровий режим",
-                            "description": "Назва папки ігрового режиму за замовчуванням (наприклад, sandbox, darkrp, terrortown)."
+                            "name": "Ігровий режим (Gamemode)",
+                            "description": "Базовий ігровий режим, що завантажується рушієм. Повинний точно відповідати назві папки ігрового режиму в 'garrysmod/gamemodes/' (наприклад, 'sandbox', 'darkrp', 'terrortown')."
                         },
                         "MAX_PLAYERS": {
                             "name": "Максимум гравців",
-                            "description": "Максимальна кількість гравців, дозволена на сервері."
+                            "description": "Абсолютна максимальна кількість слотів для гравців одночасно. Зважайте на можливості свого обладнання; фізика в Garry's Mod дуже сильно навантажує CPU. Жорстке обмеження, закладене рушієм, становить 128."
                         },
                         "TICKRATE": {
                             "name": "Tickrate",
-                            "description": "Визначає кількість оновлень сервера на секунду. За замовчуванням 33. Вищі значення сильно навантажують CPU."
+                            "description": "Частота симуляції (тактів за секунду) сервера. 33 — це оптимальний золотий стандарт для Garry's Mod. Вищі значення експоненціально збільшують навантаження на CPU та використання пропускної здатності мережі."
                         },
                         "LUA_REFRESH": {
                             "name": "Оновлення Lua",
-                            "description": "1 для увімкнення, 0 для вимкнення автооновлення Lua (Вимкніть у робочому середовищі для економії ресурсів)."
+                            "description": "Вмикає або вимикає підсистему автооновлення для скриптів Lua. Увімкніть (1) для активної розробки. У робочому середовищі встановіть значення вимкнено (0), щоб уникнути фонового опитування диска I/O та зберегти ресурси сервера."
                         },
                         "SV_TAGS": {
                             "name": "Теги сервера",
-                            "description": "Ключові слова через кому, які допоможуть гравцям знайти ваш сервер у пошуку. Підтримується будь-яка мова. Пробіли не допускаються."
+                            "description": "Ключові слова, розділені комами, для оптимізації видимості вашого сервера в ігровій пошуковій системі (наприклад, 'sandbox,rp,wiremod'). Пробіли суворо заборонені. Підтримуються кілька мов."
+                        },
+                        "SERVER_ARCH": {
+                            "name": "Архітектура сервера",
+                            "description": "Виберіть бінарну архітектуру для ігрового рушія. Ми наполегливо рекомендуємо гілку '64' (x86-64) для продуктивних серверів, щоб обійти застаріле обмеження в 4 ГБ оперативної пам'яті та значно покращити продуктивність. Використовуйте '32' лише тоді, коли цього вимагають певні застарілі аддони."
                         }
                     },
                     "ports_config": {
                         "client": {
                             "name": "Клієнтський порт",
-                            "description": "Порт, який використовується ігровим клієнтом для підключення."
+                            "description": "Основний порт, який використовується ігровими клієнтами для встановлення з'єднання з вашим сервером."
                         },
                         "primary": {
-                            "name": "Основний порт",
-                            "description": "Основний порт сервера, який використовується для підключень та RCON."
+                            "name": "Первинний порт",
+                            "description": "Основний порт сервера, відповідальний за загальні з'єднання, запити та RCON-адміністрування."
                         },
                         "reserve": {
                             "name": "Резервний порт",
-                            "description": "Резервний порт сервера, виділений на випадок проблем з основним портом або для другорядних служб."
+                            "description": "Додатковий резервний порт, який автоматично виділяється, якщо основний порт стикається з конфліктами прив'язки."
                         },
                         "sourcetv": {
                             "name": "Порт SourceTV",
-                            "description": "Порт, який використовується для трансляції матчів через SourceTV."
+                            "description": "Порт трансляції, призначений для перегляду глядачами SourceTV та запису матчів."
                         }
                     },
                     "name": "Garry's Mod",
-                    "description": "Garry's Mod — це неперевершена фізична пісочниця на рушії Source. Вона пропонує повну свободу без попередньо визначених цілей: створюйте предмети, збирайте складні механізми та встановлюйте тисячі доповнень від спільноти, щоб запускати кастомні ігрові режими, такі як Sandbox, DarkRP, TTT, або власні унікальні творіння."
+                    "description": "Garry's Mod — це неперевершена пісочниця з фізики на базі рушія Source. Вона пропонує повну свободу без попередньо визначених цілей — створюйте об'єкти, збирайте складні механізми та встановлюйте тисячі модифікацій від спільноти."
                 }
             }
         }
