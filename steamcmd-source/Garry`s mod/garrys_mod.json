@@ -50,6 +50,11 @@
             "default_value": "64",
             "user_viewable": true,
             "user_editable": true,
+            "type": "select",
+            "options": {
+                "32": "32-bit Standard (Legacy)",
+                "64": "64-bit x86-64 (Recommended)"
+            },
             "rules": "required|integer|in:32,64",
             "ui_group": "general"
         },
