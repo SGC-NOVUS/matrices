@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "name": "Garry's Mod",
-    "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons to run custom gamemodes like Sandbox, DarkRP, TTT, or your own unique creations.",
+    "description": "Garry's Mod is a definitive physics sandbox powered by the Source engine. It offers ultimate freedom with no predefined goals — spawn props, build complex contraptions, and install thousands of community addons.",
     "author": "SGC-NOVUS Tech",
     "icon_url": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4000/extras/6bc2f3d7419dbec4558deb9e0f6d6dc6.avif?t=1776868682",
     "type": "game",
@@ -9,45 +9,55 @@
     "run_image": "ghcr.io/sgc-novus/core-images:source",
     "install_image": "ghcr.io/sgc-novus/core-images:source",
     "data_dir": "/home/container",
-    "startup_command": "./srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' ) +hostname \"{{SERVER_HOSTNAME}}\" +sv_region {{SV_REGION}} +sv_location \"{{SV_LOCATION}}\" $( [ -n \"$WORKSHOP_ID\" ] && printf %s \"+host_workshop_collection $WORKSHOP_ID\" ) $( [ -n \"$STEAM_API\" ] && printf %s \"-authkey $STEAM_API\" ) $( [ -n \"$STEAM_GSLT\" ] && printf %s \"+sv_setsteamaccount $STEAM_GSLT\" ) $( [ -n \"$SERVER_PASSWORD\" ] && printf %s \"+sv_password \\\"$SERVER_PASSWORD\\\"\" ) $( [ -n \"$RCON_PASSWORD\" ] && printf %s \"+rcon_password \\\"$RCON_PASSWORD\\\"\" ) $( [ -n \"$SV_TAGS\" ] && printf %s \"+sv_tags \\\"$SV_TAGS\\\"\" ) $( [ -n \"$SV_LOADINGURL\" ] && printf %s \"+sv_loadingurl \\\"$SV_LOADINGURL\\\"\" ) $( [ -n \"$SV_DOWNLOADURL\" ] && printf %s \"+sv_downloadurl \\\"$SV_DOWNLOADURL\\\"\" )",
+    "startup_command": "./srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' ) +hostname \"{{SERVER_HOSTNAME}}\" +sv_region {{SV_REGION}} +sv_location \"{{SV_LOCATION}}\" $( [ -n \"$WORKSHOP_ID\" ] && printf %s \"+host_workshop_collection $WORKSHOP_ID\" ) $( [ -n \"$STEAM_API\" ] && printf \%s \"-authkey $STEAM_API\" ) $( [ -n \"$STEAM_GSLT\" ] && printf %s \"+sv_setsteamaccount $STEAM_GSLT\" ) $( [ -n \"$SERVER_PASSWORD\" ] && printf \%s \"+sv_password \\\"$SERVER_PASSWORD\\\"\" ) $( [ -n \"$RCON_PASSWORD\" ] && printf %s \"+rcon_password \\\"$RCON_PASSWORD\\\"\" ) $( [ -n \"$SV_TAGS\" ] && printf \%s \"+sv_tags \\\"$SV_TAGS\\\"\" ) $( [ -n \"$SV_LOADINGURL\" ] && printf %s \"+sv_loadingurl \\\"$SV_LOADINGURL\\\"\" ) $( [ -n \"$SV_DOWNLOADURL\" ] && printf \%s \"+sv_downloadurl \\\"$SV_DOWNLOADURL\\\"\" )",
     "stop_command": "quit",
-    "install_script": "#!/bin/bash\n# steamcmd Base Installation Script\n## Server Files: /home/container\n## just in case someone removed the defaults.\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    echo -e \"steam user is not set.\\n\"\n    echo -e \"Using anonymous user.\\n\"\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nelse\n    echo -e \"user set to ${STEAM_USER}\"\nfi\n\n## download and install steamcmd\ncd /tmp\nmkdir -p /home/container/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /home/container/steamcmd\nmkdir -p /home/container/steamapps # Fix steamcmd disk write error when this folder is missing\ncd /home/container/steamcmd\n\n# SteamCMD fails otherwise for some reason, even running as root.\n# This is changed at the end of the install process anyways.\nchown -R root:root /home/container\nexport HOME=/home/container\n\n## install game using steamcmd\n./steamcmd.sh +force_install_dir /home/container +login ${STEAM_USER:-anonymous} ${STEAM_PASS} ${STEAM_AUTH} $( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf %s '+@sSteamCmdForcePlatformType windows' || printf %s '+@sSteamCmdForcePlatformType linux' ) +app_update ${SRCDS_APPID:-4020} ${EXTRA_FLAGS} validate +quit\n\n## set up 32 bit libraries\nmkdir -p /home/container/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so\n## set up 64 bit libraries\nmkdir -p /home/container/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so\n\n## set up MySQLOO\necho \"=== Установка последней версии MySQLOO ===\"\nmkdir -p /home/container/garrysmod/lua/bin\ncd /home/container\nLATEST_MYSQLOO=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[] | select(.name == \"gmsv_mysqloo_linux.dll\") | .browser_download_url')\n\nif [ -n \"$LATEST_MYSQLOO\" ] && [ \"$LATEST_MYSQLOO\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\n    echo \"MySQLOO успешно скачан и установлен.\"\nelse\n    echo \"Ошибка получения ссылки на MySQLOO.\"\nfi\n\n# Creating needed default files for the game\ncd /home/container/garrysmod/lua/autorun/server\necho '-- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop\n-- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID\n-- Use https://beta.configcreator.com/create/gmod/resources.lua to easily create a list based on your collection ID\nresource.AddWorkshop( \"\" )' > workshop.lua\n\ncd /home/container/garrysmod/cfg\necho '// Please do not set RCon, Hostname, Password, Region, Location or URLs in here; use the startup parameters in panel.\n\n// Steam Server List Settings\nsv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\n// Server Limits\nsbox_maxprops       100\nsbox_maxragdolls    5\nsbox_maxnpcs        10\nsbox_maxballoons    10\nsbox_maxeffects     10\nsbox_maxdynamite    10\nsbox_maxlamps       10\nsbox_maxthrusters   10\nsbox_maxwheels      10\nsbox_maxhoverballs  10\nsbox_maxvehicles    20\nsbox_maxbuttons     10\nsbox_maxsents       20\nsbox_maxemitters    5\nsbox_godmode        0\nsbox_noclip         0\n\n// Network Settings - Please keep these set to default.\nsv_minrate          75000\nsv_maxrate          0\ngmod_physiterations 2\nnet_splitpacket_maxrate 45000\ndecalfrequency      12\n\n// Execute Ban Files - Please do not edit\nexec banned_ip.cfg\nexec banned_user.cfg\n\n// Add custom lines under here' > server.cfg",
+    "install_script": "#!/bin/bash\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nfi\n\ncd /tmp\nmkdir -p /home/container/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /home/container/steamcmd\nmkdir -p /home/container/steamapps\ncd /home/container/steamcmd\n\nchown -R root:root /home/container\nexport HOME=/home/container\n\nBETA_FLAG=\"\"\nif [ \"${SERVER_ARCH}\" == \"64\" ]; then\n    BETA_FLAG=\"-beta x86-64\"\nfi\n\n./steamcmd.sh +force_install_dir /home/container +login ${STEAM_USER:-anonymous}${STEAM_PASS} ${STEAM_AUTH}$( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf \%s '+@sSteamCmdForcePlatformType windows' \vert{}\vert{} printf \%s '+@sSteamCmdForcePlatformType linux' ) +app_update ${SRCDS_APPID:-4020} ${BETA_FLAG}${EXTRA_FLAGS} validate +quit\n\nmkdir -p /home/container/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so\nmkdir -p /home/container/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so || true\n\nmkdir -p /home/container/garrysmod/lua/bin\ncd /home/container\n\nLATEST_MYSQLOO_32=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest \vert{} jq -r '.assets[] \vert{} select(.name == \"gmsv_mysqloo_linux.dll\") \vert{} .browser_download_url')\nif [ -n \"$LATEST_MYSQLOO_32\" ] && [ \"$LATEST_MYSQLOO_32\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO_32\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\nfi\n\nLATEST_MYSQLOO_64=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest \vert{} jq -r '.assets[] \vert{} select(.name == \"gmsv_mysqloo_linux64.dll\") \vert{} .browser_download_url')\nif [ -n \"$LATEST_MYSQLOO_64\" ] && [ \"$LATEST_MYSQLOO_64\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO_64\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux64.dll\nfi\n\ncd /home/container/garrysmod/lua/autorun/server\necho '-- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop\nresource.AddWorkshop( \"\" )' > workshop.lua\n\ncd /home/container/garrysmod/cfg\necho '// Please do not set RCon, Hostname, Password, Region, Location or URLs in here; use the startup parameters in panel.\n\nsv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\nsbox_maxprops       100\nsbox_maxragdolls    5\nsbox_maxnpcs        10\nsbox_maxballoons    10\nsbox_maxeffects     10\nsbox_maxdynamite    10\nsbox_maxlamps       10\nsbox_maxthrusters   10\nsbox_maxwheels      10\nsbox_maxhoverballs  10\nsbox_maxvehicles    20\nsbox_maxbuttons     10\nsbox_maxsents       20\nsbox_maxemitters    5\nsbox_godmode        0\nsbox_noclip         0\n\nsv_minrate          75000\nsv_maxrate          0\ngmod_physiterations 2\nnet_splitpacket_maxrate 45000\ndecalfrequency      12\n\nexec banned_ip.cfg\nexec banned_user.cfg' > server.cfg",
     "ports_config": {
         "client": {
             "name": "Client Port",
             "default_port": 27005,
             "protocol": "udp",
             "env_variable": "CLIENT_PORT",
-            "description": "Port used by the game client to connect."
+            "description": "The primary port utilized by game clients to establish connections with your server."
         },
         "primary": {
             "name": "Primary Port",
             "default_port": 27015,
             "protocol": "tcp+udp",
             "env_variable": "SERVER_PORT",
-            "description": "Primary server port used for connections and RCON."
+            "description": "The core server port responsible for general connections, queries, and RCON administration."
         },
         "reserve": {
             "name": "Reserve Port",
             "default_port": 27016,
             "protocol": "tcp+udp",
             "env_variable": "SERVER_PORT_RESERVE",
-            "description": "Reserve server port allocated in case of primary port issues or secondary services."
+            "description": "A secondary fallback port automatically allocated if the primary port encounters binding conflicts."
         },
         "sourcetv": {
             "name": "SourceTV Port",
             "default_port": 27025,
             "protocol": "udp",
             "env_variable": "SOURCETV_PORT",
-            "description": "Port used for broadcasting matches via SourceTV."
+            "description": "The broadcast port dedicated to SourceTV spectator streaming and match recording."
         }
     },
     "variables": [
         {
+            "name": "Server Architecture",
+            "description": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it.",
+            "env_variable": "SERVER_ARCH",
+            "default_value": "64",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|in:32,64",
+            "ui_group": "general"
+        },
+        {
             "name": "Server Hostname",
-            "description": "The public name of your server displayed in the server browser. Note that due to technical limitations of the Garry's Mod engine, the display name is capped at 63 characters. While you can adjust this length limit within the variable matrix configuration parameters if necessary, please keep in mind that any characters exceeding this limit will be truncated by the game engine.",
+            "description": "The public display name of your server in the Steam server browser. Note: The Source engine strictly truncates hostnames exceeding 63 characters. Keep it concise and impactful.",
             "env_variable": "SERVER_HOSTNAME",
-            "default_value": "New Gmod Server",
+            "default_value": "New NOVUS Gmod Server",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string|max:63",
@@ -55,7 +65,7 @@
         },
         {
             "name": "Server Tags",
-            "description": "Comma-separated keywords to help players find your server in search. Any language is supported. No spaces allowed.",
+            "description": "Comma-separated keywords to optimize your server's visibility in the in-game search engine (e.g., 'sandbox,rp,wiremod'). Spaces are strictly prohibited. Supports multiple languages.",
             "env_variable": "SV_TAGS",
             "default_value": "sandbox,build,wiremod",
             "user_viewable": true,
@@ -65,7 +75,7 @@
         },
         {
             "name": "Server Password",
-            "description": "Password to protect the server. Leave empty for a public server.",
+            "description": "The authentication password required for players to join. Leave this field completely empty to operate a public server accessible to everyone.",
             "env_variable": "SERVER_PASSWORD",
             "default_value": "",
             "user_viewable": true,
@@ -75,7 +85,7 @@
         },
         {
             "name": "RCON Password",
-            "description": "Password used for remote console access. Leave empty to completely disable RCON (Recommended for security).",
+            "description": "The cryptographic passphrase used for remote console (RCON) administration. For maximum security, leave this empty to permanently disable RCON if you manage permissions via in-game mods (like ULX/SAM/NovusAdmin).",
             "env_variable": "RCON_PASSWORD",
             "default_value": "",
             "user_viewable": true,
@@ -85,7 +95,7 @@
         },
         {
             "name": "Steam Region",
-            "description": "The geographic region for the Steam master server browser.",
+            "description": "Designates the geographic region for Steam master server routing. This affects how your server is categorized in the global browser (e.g., 0=US East, 1=US West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa, 255=World).",
             "env_variable": "SV_REGION",
             "default_value": "255",
             "user_viewable": true,
@@ -97,7 +107,7 @@
         },
         {
             "name": "Server Location",
-            "description": "Two-letter country code (ISO 3166-1 alpha-2) to display the flag in the server browser. Defaults to 'XX' for International/World location.",
+            "description": "The two-letter ISO 3166-1 alpha-2 country code (e.g., 'US', 'DE', 'UA') used to display the correct national flag next to your server. Defaults to 'XX' for International.",
             "env_variable": "SV_LOCATION",
             "default_value": "XX",
             "user_viewable": true,
@@ -109,7 +119,7 @@
         },
         {
             "name": "Loading Screen URL",
-            "description": "Custom loading screen URL. Supports %s (SteamID64) and %m (map).",
+            "description": "A custom HTTP/HTTPS web endpoint displayed while players connect. You can inject dynamic variables like '%s' (Player SteamID64) and '%m' (Current Map) to personalize the loading experience.",
             "env_variable": "SV_LOADINGURL",
             "default_value": "",
             "user_viewable": true,
@@ -119,7 +129,7 @@
         },
         {
             "name": "FastDL URL",
-            "description": "HTTP(S) URL for FastDL to speed up custom content downloads.",
+            "description": "The HTTP/HTTPS FastDL (Fast Download) endpoint. Drastically accelerates custom content (models, materials, sounds) delivery to clients by bypassing the slow native Source engine transfers.",
             "env_variable": "SV_DOWNLOADURL",
             "default_value": "",
             "user_viewable": true,
@@ -129,7 +139,7 @@
         },
         {
             "name": "Map",
-            "description": "The default map loaded when the server starts. Ensure the map is installed or included in Workshop.",
+            "description": "The initial map loaded upon server startup (e.g., 'gm_flatgrass', 'rp_downtown_v4c_v2'). Ensure the respective map file is either mounted via the Steam Workshop or physically present in your 'garrysmod/maps/' directory.",
             "env_variable": "SRCDS_MAP",
             "default_value": "gm_flatgrass",
             "user_viewable": true,
@@ -139,7 +149,7 @@
         },
         {
             "name": "Steam Account Token (GSLT)",
-            "description": "Generate it at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
+            "description": "Your Game Server Login Token (GSLT). Mandatory for anonymous players to connect and for proper Steam ranking. Generate this at: https://steamcommunity.com/dev/managegameservers (Use AppID 4000).",
             "env_variable": "STEAM_GSLT",
             "default_value": "",
             "user_viewable": true,
@@ -148,26 +158,8 @@
             "ui_group": "security"
         },
         {
-            "name": "Game AppID (Client)",
-            "description": "AppID 4000 is the Garry's Mod client identifier. Used by panel auto-generators. Do not modify.",
-            "env_variable": "GAME_APPID",
-            "default_value": "4000",
-            "user_viewable": false,
-            "user_editable": false,
-            "rules": "required|integer|in:4000"
-        },
-        {
-            "name": "Source AppID (Server)",
-            "description": "AppID 4020 is used by SteamCMD to download server files. Do not modify.",
-            "env_variable": "SRCDS_APPID",
-            "default_value": "4020",
-            "user_viewable": false,
-            "user_editable": false,
-            "rules": "required|integer|in:4020"
-        },
-        {
             "name": "Workshop ID",
-            "description": "The ID of your Steam Workshop collection (numbers at the end of the URL).",
+            "description": "The numerical ID of your public Steam Workshop Collection. The server will automatically synchronize and mount all addons within this collection on boot. Extract the numbers from the end of your collection's URL.",
             "env_variable": "WORKSHOP_ID",
             "default_value": "",
             "user_viewable": true,
@@ -177,7 +169,7 @@
         },
         {
             "name": "Gamemode",
-            "description": "The default gamemode folder name (e.g., sandbox, darkrp, terrortown).",
+            "description": "The foundational gamemode loaded by the engine. Must exactly match the gamemode's folder name in 'garrysmod/gamemodes/' (e.g., 'sandbox', 'darkrp', 'terrortown').",
             "env_variable": "GAMEMODE",
             "default_value": "sandbox",
             "user_viewable": true,
@@ -187,7 +179,7 @@
         },
         {
             "name": "Max Players",
-            "description": "The maximum number of players allowed on the server.",
+            "description": "The absolute maximum concurrent player slots. Be mindful of your hardware capabilities; Garry's Mod physics are heavily CPU-bound. The hard limit encoded by the engine is 128.",
             "env_variable": "MAX_PLAYERS",
             "default_value": "32",
             "user_viewable": true,
@@ -197,7 +189,7 @@
         },
         {
             "name": "Tickrate",
-            "description": "Determines server updates per second. Default is 33. Higher values heavily load the CPU.",
+            "description": "The simulation frequency (Ticks Per Second) of the server. 33 is the optimal gold standard for Garry's Mod. Higher values exponentially increase CPU load and network bandwidth overhead.",
             "env_variable": "TICKRATE",
             "default_value": "33",
             "user_viewable": true,
@@ -207,13 +199,4 @@
         },
         {
             "name": "Lua Refresh",
-            "description": "1 to enable, 0 to disable Lua autorefresh (Disable on production to save resources).",
-            "env_variable": "LUA_REFRESH",
-            "default_value": "0",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|boolean",
-            "ui_group": "security"
-        }
-    ]
-}
+            "description": "Toggles the Auto-Refresh subsystem for Lua scripts. Set to enabled (1) for active development. In production environments, set to disabled (0) to eliminate background disk I/O
