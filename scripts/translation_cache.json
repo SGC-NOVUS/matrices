@@ -134,7 +134,8 @@
                         "port_reserve": "A secondary fallback port automatically allocated if the primary port encounters binding conflicts.",
                         "port_sourcetv": "The broadcast port dedicated to SourceTV spectator streaming and match recording.",
                         "var_SV_TAGS": "Comma-separated keywords to optimize your server's visibility in the in-game search engine (e.g., 'sandbox,rp,wiremod'). Spaces are strictly prohibited. Supports multiple languages.",
-                        "var_SERVER_ARCH": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it."
+                        "var_SERVER_ARCH": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it.",
+                        "var_SteamAppId": "Steam AppID 4000 required for 64-bit Steam API initialization and Steam Web API integrations. Internal system variable."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
@@ -208,6 +209,10 @@
                         "SERVER_ARCH": {
                             "name": "Архитектура сервера",
                             "description": "Выберите бинарную архитектуру для игрового движка. Мы настоятельно рекомендуем ветку '64' (x86-64) для продакшн-серверов, чтобы обойти устаревшее ограничение в 4 ГБ ОЗУ и значительно повысить производительность. Используйте '32' только в том случае, если этого требуют специфические старые аддоны."
+                        },
+                        "SteamAppId": {
+                            "name": "Steam AppID",
+                            "description": "Steam AppID 4000 требуется для инициализации 64-битного Steam API и интеграции со Steam Web API. Внутренняя системная переменная."
                         }
                     },
                     "ports_config": {
@@ -255,7 +260,8 @@
                         "port_reserve": "A secondary fallback port automatically allocated if the primary port encounters binding conflicts.",
                         "port_sourcetv": "The broadcast port dedicated to SourceTV spectator streaming and match recording.",
                         "var_SV_TAGS": "Comma-separated keywords to optimize your server's visibility in the in-game search engine (e.g., 'sandbox,rp,wiremod'). Spaces are strictly prohibited. Supports multiple languages.",
-                        "var_SERVER_ARCH": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it."
+                        "var_SERVER_ARCH": "Select the binary architecture for the game engine. We strongly recommend the '64' (x86-64) branch for production servers to bypass the legacy 4GB RAM limit and drastically improve performance. Use '32' only if specific legacy addons require it.",
+                        "var_SteamAppId": "Steam AppID 4000 required for 64-bit Steam API initialization and Steam Web API integrations. Internal system variable."
                     },
                     "variables": {
                         "SERVER_HOSTNAME": {
@@ -329,6 +335,10 @@
                         "SERVER_ARCH": {
                             "name": "Архітектура сервера",
                             "description": "Виберіть бінарну архітектуру для ігрового рушія. Ми наполегливо рекомендуємо гілку '64' (x86-64) для продуктивних серверів, щоб обійти застаріле обмеження в 4 ГБ оперативної пам'яті та значно покращити продуктивність. Використовуйте '32' лише тоді, коли цього вимагають певні застарілі аддони."
+                        },
+                        "SteamAppId": {
+                            "name": "Steam AppID",
+                            "description": "Steam AppID 4000 необхідний для ініціалізації 64-біткового Steam API та інтеграцій зі Steam Web API. Внутрішня системна змінна."
                         }
                     },
                     "ports_config": {
