@@ -11,13 +11,14 @@
     "data_dir": "/home/container",
     "startup_command": "$( [ \"$SERVER_ARCH\" == \"64\" ] && printf %s './srcds_run_x64' || printf %s './srcds_run' ) -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +maxplayers {{MAX_PLAYERS}} -tickrate {{TICKRATE}} $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' ) $( [ -n \"$SERVER_HOSTNAME\" ] && printf %s \"+hostname \\\"$SERVER_HOSTNAME\\\"\" ) +sv_region {{SV_REGION}} +sv_location \"{{SV_LOCATION}}\" $( [ -n \"$WORKSHOP_ID\" ] && printf %s \"+host_workshop_collection $WORKSHOP_ID\" ) $( [ -n \"$STEAM_API\" ] && printf %s \"-authkey $STEAM_API\" ) $( [ -n \"$STEAM_GSLT\" ] && printf %s \"+sv_setsteamaccount $STEAM_GSLT\" ) $( [ -n \"$SERVER_PASSWORD\" ] && printf %s \"+sv_password \\\"$SERVER_PASSWORD\\\"\" ) $( [ -n \"$RCON_PASSWORD\" ] && printf %s \"+rcon_password \\\"$RCON_PASSWORD\\\"\" ) $( [ -n \"$SV_TAGS\" ] && printf %s \"+sv_tags \\\"$SV_TAGS\\\"\" ) $( [ -n \"$SV_LOADINGURL\" ] && printf %s \"+sv_loadingurl \\\"$SV_LOADINGURL\\\"\" ) $( [ -n \"$SV_DOWNLOADURL\" ] && printf %s \"+sv_downloadurl \\\"$SV_DOWNLOADURL\\\"\" )",
     "stop_command": "quit",
-    "install_script": "#!/bin/bash\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nfi\n\ncd /tmp\nmkdir -p /home/container/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /home/container/steamcmd\nmkdir -p /home/container/steamapps\ncd /home/container/steamcmd\n\nexport HOME=/home/container\n\nPLATFORM_FLAG=\"\"\nif [ \"${WINDOWS_INSTALL}\" == \"1\" ]; then\n    PLATFORM_FLAG=\"+@sSteamCmdForcePlatformType windows\"\nfi\n\nBETA_FLAG=\"\"\nif [ \"${SERVER_ARCH}\" == \"64\" ]; then\n    BETA_FLAG=\"-beta x86-64\"\nfi\n\n# Флаг платформы передается только если мы форсируем скачивание Windows-версии\n./steamcmd.sh ${PLATFORM_FLAG} +force_install_dir /home/container +login ${STEAM_USER:-anonymous} ${STEAM_PASS} ${STEAM_AUTH} +app_update ${SRCDS_APPID:-4020} ${BETA_FLAG} validate +quit\n\necho \"4000\" > /home/container/steam_appid.txt\n\nmkdir -p /home/container/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so || true\nmkdir -p /home/container/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so || true\n\nmkdir -p /home/container/garrysmod/lua/bin\ncd /home/container\n\nLATEST_MYSQLOO_32=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[]? | select(.name == \"gmsv_mysqloo_linux.dll\") | .browser_download_url')\nif [ -n \"$LATEST_MYSQLOO_32\" ] && [ \"$LATEST_MYSQLOO_32\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO_32\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\nfi\n\nLATEST_MYSQLOO_64=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[]? | select(.name == \"gmsv_mysqloo_linux64.dll\") | .browser_download_url')\nif [ -n \"$LATEST_MYSQLOO_64\" ] && [ \"$LATEST_MYSQLOO_64\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO_64\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux64.dll\nfi\n\nmkdir -p /home/container/garrysmod/lua/autorun/server && cd /home/container/garrysmod/lua/autorun/server\necho '-- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop\nresource.AddWorkshop( \"\" )' > workshop.lua\n\nmkdir -p /home/container/garrysmod/cfg && cd /home/container/garrysmod/cfg\necho '// Please do not set RCon, Hostname, Password, Region, Location or URLs in here; use the startup parameters in panel.\n\nsv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\nsbox_maxprops       100\nsbox_maxragdolls    5\nsbox_maxnpcs        10\nsbox_maxballoons    10\nsbox_maxeffects     10\nsbox_maxdynamite    10\nsbox_maxlamps       10\nsbox_maxthrusters   10\nsbox_maxwheels      10\nsbox_maxhoverballs  10\nsbox_maxvehicles    20\nsbox_maxbuttons     10\nsbox_maxsents       20\nsbox_maxemitters    5\nsbox_godmode        0\nsbox_noclip         0\n\nsv_minrate          75000\nsv_maxrate          0\ngmod_physiterations 2\nnet_splitpacket_maxrate 45000\ndecalfrequency      12\n\nexec banned_ip.cfg\nexec banned_user.cfg' > server.cfg\n\ntouch /home/container/garrysmod/cfg/banned_ip.cfg\ntouch /home/container/garrysmod/cfg/banned_user.cfg\n\nchown -R container:container /home/container || true",
+    "install_script": "#!/bin/bash\nif [ \"${STEAM_USER}\" == \"\" ]; then\n    STEAM_USER=anonymous\n    STEAM_PASS=\"\"\n    STEAM_AUTH=\"\"\nfi\n\ncd /tmp\nmkdir -p /home/container/steamcmd\ncurl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz\ntar -xzvf steamcmd.tar.gz -C /home/container/steamcmd\nmkdir -p /home/container/steamapps\ncd /home/container/steamcmd\n\nexport HOME=/home/container\n\nPLATFORM_FLAG=\"\"\nif [ \"${WINDOWS_INSTALL}\" == \"1\" ]; then\n    PLATFORM_FLAG=\"+@sSteamCmdForcePlatformType windows\"\nfi\n\nBETA_FLAG=\"\"\nif [ \"${SERVER_ARCH}\" == \"64\" ]; then\n    BETA_FLAG=\"-beta x86-64\"\nfi\n\n./steamcmd.sh ${PLATFORM_FLAG} +force_install_dir /home/container +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +app_update ${SRCDS_APPID:-4020} ${BETA_FLAG} validate +quit\n\necho \"4000\" > /home/container/steam_appid.txt\n\nmkdir -p /home/container/.steam/sdk32\ncp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so || true\nmkdir -p /home/container/.steam/sdk64\ncp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so || true\n\nmkdir -p /home/container/garrysmod/lua/bin\ncd /home/container\n\nLATEST_MYSQLOO_32=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[]? | select(.name == \"gmsv_mysqloo_linux.dll\") | .browser_download_url')\nif [ -n \"$LATEST_MYSQLOO_32\" ] && [ \"$LATEST_MYSQLOO_32\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO_32\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux.dll\nfi\n\nLATEST_MYSQLOO_64=$(curl -s https://api.github.com/repos/FredyH/MySQLOO/releases/latest | jq -r '.assets[]? | select(.name == \"gmsv_mysqloo_linux64.dll\") | .browser_download_url')\nif [ -n \"$LATEST_MYSQLOO_64\" ] && [ \"$LATEST_MYSQLOO_64\" != \"null\" ]; then\n    curl -sL \"$LATEST_MYSQLOO_64\" -o /home/container/garrysmod/lua/bin/gmsv_mysqloo_linux64.dll\nfi\n\nmkdir -p /home/container/garrysmod/lua/autorun/server && cd /home/container/garrysmod/lua/autorun/server\necho 'resource.AddWorkshop( \"\" )' > workshop.lua\n\nmkdir -p /home/container/garrysmod/cfg && cd /home/container/garrysmod/cfg\necho 'sv_lan \"0\"\nsv_max_queries_sec_global \"30000\"\nsv_max_queries_window \"45\"\nsv_max_queries_sec \"5\"\n\nsbox_maxprops       100\nsbox_maxragdolls    5\nsbox_maxnpcs        10\nsbox_maxballoons    10\nsbox_maxeffects     10\nsbox_maxdynamite    10\nsbox_maxlamps       10\nsbox_maxthrusters   10\nsbox_maxwheels      10\nsbox_maxhoverballs  10\nsbox_maxvehicles    20\nsbox_maxbuttons     10\nsbox_maxsents       20\nsbox_maxemitters    5\nsbox_godmode        0\nsbox_noclip         0\n\nsv_minrate          75000\nsv_maxrate          0\ngmod_physiterations 2\nnet_splitpacket_maxrate 45000\ndecalfrequency      12\n\nexec banned_ip.cfg\nexec banned_user.cfg' > server.cfg\n\ntouch /home/container/garrysmod/cfg/banned_ip.cfg\ntouch /home/container/garrysmod/cfg/banned_user.cfg\n\nchown -R container:container /home/container || true",
     "ports_config": {
         "client": {
             "name": "Client Port",
             "default_port": 27005,
             "protocol": "udp",
             "env_variable": "CLIENT_PORT",
+            "required": true,
             "description": "The primary port utilized by game clients to establish connections with your server."
         },
         "primary": {
@@ -25,6 +26,7 @@
             "default_port": 27015,
             "protocol": "tcp+udp",
             "env_variable": "SERVER_PORT",
+            "required": true,
             "description": "The core server port responsible for general connections, queries, and RCON administration."
         },
         "reserve": {
@@ -32,6 +34,7 @@
             "default_port": 27016,
             "protocol": "tcp+udp",
             "env_variable": "SERVER_PORT_RESERVE",
+            "required": false,
             "description": "A secondary fallback port automatically allocated if the primary port encounters binding conflicts."
         },
         "sourcetv": {
@@ -39,6 +42,7 @@
             "default_port": 27025,
             "protocol": "udp",
             "env_variable": "SOURCETV_PORT",
+            "required": false,
             "description": "The broadcast port dedicated to SourceTV spectator streaming and match recording."
         }
     },
@@ -52,8 +56,8 @@
             "user_editable": true,
             "type": "select",
             "options": {
-                "64": "64-bit x86-64 (Recommended)",
-                "32": "32-bit Standard (Legacy)"
+                "32": "32-bit Standard (Legacy)",
+                "64": "64-bit x86-64 (Recommended)"
             },
             "rules": "required|integer|in:32,64",
             "ui_group": "general"
